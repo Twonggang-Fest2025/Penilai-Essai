@@ -3,54 +3,138 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>TES OCR Tulisan Tangan v2</title>
-<link rel="stylesheet" href="style.css">
+<title>TES TrOCR Base - Tulisan Tangan</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#eef2f7;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.wrap{max-width:900px;margin:auto;padding:22px}
+.card{background:#fff;border-radius:22px;padding:22px;margin-bottom:18px;box-shadow:0 8px 30px #00000010}
+h1{font-size:28px;margin:0 0 8px}.sub{color:#5d6a7d;margin-bottom:18px}
+label{font-weight:700;display:block;margin:12px 0 6px}
+input[type=file]{width:100%;padding:12px;background:#f5f7fa;border-radius:12px}
+button{border:0;border-radius:13px;padding:13px 17px;font-weight:800;font-size:16px;background:#172033;color:white;margin:8px 6px 0 0}
+button:disabled{opacity:.45}
+canvas{display:block;width:100%;max-height:430px;object-fit:contain;background:#111;border-radius:14px;margin-top:15px}
+.status{padding:12px 14px;border-radius:12px;background:#f3f6fa;margin-top:14px;white-space:pre-wrap}
+.result{font-size:20px;line-height:1.5;background:#f3f6fa;padding:18px;border-radius:14px;min-height:100px}
+.small{font-size:14px;color:#647184;line-height:1.5}
+.slider{width:100%}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.wrap{padding:14px}}
+</style>
 </head>
 <body>
-<header>
-  <div><h1>TES OCR Tulisan Tangan v2</h1><p>Uji OCR per potongan tulisan • iPad • tanpa API key</p></div>
-  <span id="status" class="badge">Mesin belum aktif</span>
-</header>
-<main>
-<section class="card">
-<h2>1. Aktifkan Mesin OCR</h2>
-<p class="muted">Versi ini sengaja membaca <b>satu potongan/baris tulisan</b>, bukan satu lembar penuh. Model TrOCR memang dipakai sebagai pipeline <i>image-to-text</i>.</p>
-<button id="loadBtn">Aktifkan Mesin OCR</button>
-<div class="progress"><div id="bar"></div></div>
-<div id="message" class="message"></div>
-</section>
-
-<section class="card">
-<h2>2. Pilih Foto Jawaban</h2>
-<input id="fileInput" type="file" accept="image/*" disabled>
-<img id="sourcePreview" alt="Foto sumber" hidden>
-<p class="muted">Setelah foto masuk, atur batas potongan sampai hanya berisi 1–2 baris tulisan yang ingin dibaca.</p>
-
-<div class="controls">
-  <label>Kiri <output id="x1v">10%</output><input id="x1" type="range" min="0" max="80" value="10"></label>
-  <label>Kanan <output id="x2v">90%</output><input id="x2" type="range" min="20" max="100" value="90"></label>
-  <label>Atas <output id="y1v">10%</output><input id="y1" type="range" min="0" max="80" value="10"></label>
-  <label>Bawah <output id="y2v">35%</output><input id="y2" type="range" min="20" max="100" value="35"></label>
+<div class="wrap">
+<div class="card">
+<h1>🧪 Tes TrOCR Base</h1>
+<div class="sub">Uji mesin OCR tulisan tangan yang lebih besar pada foto tulisan Anda.</div>
+<div class="small"><b>Catatan:</b> TrOCR Base resmi tersedia dalam format Transformers.js. Model ini ditujukan untuk membaca gambar tulisan tangan, terutama potongan/baris tulisan, bukan satu lembar ujian penuh.</div>
 </div>
-<div class="presets">
-<button class="secondary" data-preset="top">Area atas</button>
-<button class="secondary" data-preset="middle">Area tengah</button>
-<button class="secondary" data-preset="bottom">Area bawah</button>
-</div>
-<div class="cropWrap"><canvas id="cropCanvas"></canvas></div>
-<button id="ocrBtn" disabled>🚀 Baca Potongan Tulisan</button>
-</section>
 
-<section class="card">
+<div class="card">
+<h2>1. Pilih Foto</h2>
+<input id="file" type="file" accept="image/*">
+<canvas id="canvas"></canvas>
+<div class="grid">
+<div><label>Kiri <span id="lv">0%</span></label><input id="left" class="slider" type="range" min="0" max="80" value="0"></div>
+<div><label>Kanan <span id="rv">100%</span></label><input id="right" class="slider" type="range" min="20" max="100" value="100"></div>
+<div><label>Atas <span id="tv">0%</span></label><input id="top" class="slider" type="range" min="0" max="80" value="0"></div>
+<div><label>Bawah <span id="bv">100%</span></label><input id="bottom" class="slider" type="range" min="20" max="100" value="100"></div>
+</div>
+<div>
+<button onclick="preset('top')">Area atas</button>
+<button onclick="preset('middle')">Area tengah</button>
+<button onclick="preset('bottom')">Area bawah</button>
+</div>
+</div>
+
+<div class="card">
+<h2>2. Mesin OCR</h2>
+<div id="status" class="status">Memuat TrOCR Base… Pertama kali bisa membutuhkan waktu cukup lama.</div>
+<button id="read" disabled>🚀 Baca Potongan Tulisan</button>
+</div>
+
+<div class="card">
 <h2>3. Hasil Pembacaan</h2>
 <div id="result" class="result">Belum ada hasil.</div>
-</section>
+<div class="small" style="margin-top:12px">Tes ini sengaja dibuat sederhana. Jika hasilnya masih kacau, kita tidak akan langsung membuat aplikasi penilaian 500 lembar; kita akan ganti strategi OCR-nya.</div>
+</div>
+</div>
 
-<section class="card note">
-<b>Catatan penting</b>
-<p>Jangan menguji dengan satu lembar penuh dulu. Tujuan v2 adalah memastikan model dapat membaca tulisan tangan setelah gambar dipotong menjadi area yang sesuai.</p>
-</section>
-</main>
-<script type="module" src="app.js"></script>
+<script type="module">
+import { pipeline } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1";
+
+const $=id=>document.getElementById(id);
+const file=$("file"), canvas=$("canvas"), ctx=canvas.getContext("2d");
+const read=$("read"), status=$("status"), result=$("result");
+let img=null, pipe=null;
+
+const sliders=["left","right","top","bottom"];
+function updateLabels(){
+ $("lv").textContent=$("left").value+"%"; $("rv").textContent=$("right").value+"%";
+ $("tv").textContent=$("top").value+"%"; $("bv").textContent=$("bottom").value+"%";
+ draw();
+}
+sliders.forEach(x=>$(x).addEventListener("input",updateLabels));
+
+function draw(){
+ if(!img)return;
+ canvas.width=img.naturalWidth; canvas.height=img.naturalHeight;
+ ctx.drawImage(img,0,0);
+ const x=canvas.width*+$("left").value/100;
+ const y=canvas.height*+$("top").value/100;
+ const w=canvas.width*(+$("right").value-+$("left").value)/100;
+ const h=canvas.height*(+$("bottom").value-+$("top").value)/100;
+ ctx.save();ctx.fillStyle="rgba(0,0,0,.62)";
+ ctx.fillRect(0,0,canvas.width,canvas.height);
+ ctx.clearRect(x,y,w,h);ctx.drawImage(img,x,y,w,h,x,y,w,h);
+ ctx.strokeStyle="#00a8ff";ctx.lineWidth=Math.max(4,canvas.width/300);
+ ctx.strokeRect(x,y,w,h);ctx.restore();
+}
+
+function preset(p){
+ if(p==="top"){$("left").value=5;$("right").value=95;$("top").value=0;$("bottom").value=32}
+ if(p==="middle"){$("left").value=5;$("right").value=95;$("top").value=28;$("bottom").value=68}
+ if(p==="bottom"){$("left").value=5;$("right").value=95;$("top").value=62;$("bottom").value=98}
+ updateLabels();
+}
+
+file.onchange=()=>{
+ const f=file.files?.[0]; if(!f)return;
+ img=new Image();
+ img.onload=()=>{draw();status.textContent="Foto siap. Mesin OCR juga harus sudah selesai dimuat.";};
+ img.src=URL.createObjectURL(f);
+};
+
+(async()=>{
+ try{
+   status.textContent="Memuat TrOCR Base Handwritten…\nModel ini lebih besar dari versi Small, jadi tunggu sampai selesai.";
+   pipe=await pipeline("image-to-text","Xenova/trocr-base-handwritten",{device:"wasm"});
+   status.textContent="✅ TrOCR Base siap. Pilih foto, atur potongan, lalu tekan tombol baca.";
+   read.disabled=false;
+ }catch(e){
+   console.error(e);
+   status.textContent="❌ Gagal memuat model.\n"+(e?.message||e);
+ }
+})();
+
+read.onclick=async()=>{
+ if(!pipe||!img)return;
+ read.disabled=true; result.textContent="Sedang membaca…";
+ try{
+   const x=Math.round(canvas.width*+$("left").value/100);
+   const y=Math.round(canvas.height*+$("top").value/100);
+   const w=Math.round(canvas.width*(+$("right").value-+$("left").value)/100);
+   const h=Math.round(canvas.height*(+$("bottom").value-+$("top").value)/100);
+   if(w<30||h<20)throw new Error("Area potongan terlalu kecil.");
+   const c=document.createElement("canvas"); c.width=w; c.height=h;
+   c.getContext("2d").drawImage(img,x,y,w,h,0,0,w,h);
+   const output=await pipe(c);
+   result.textContent=(output?.[0]?.generated_text||"Tidak ada teks").trim();
+ }catch(e){
+   console.error(e); result.textContent="ERROR: "+(e?.message||e);
+ }finally{read.disabled=false;}
+};
+updateLabels();
+</script>
 </body>
 </html>
