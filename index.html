@@ -2,138 +2,156 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Koreksi OCR Semua Kelas</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Penilai Esai — Upload 20</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#eef2f7;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.wrap{max-width:1000px;margin:auto;padding:16px}.card{background:#fff;border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:0 8px 28px #00000010}
-h1{margin:0 0 6px;font-size:27px}h2{margin-top:0}.muted{color:#66758a;font-size:14px;line-height:1.55}
-select,textarea,button{font:inherit}select{width:100%;padding:12px;border:1px solid #ccd6e5;border-radius:12px;background:#fff}
-textarea{width:100%;min-height:220px;border:1px solid #ccd6e5;border-radius:14px;padding:14px;font:16px/1.6 inherit}
-button{border:0;border-radius:12px;padding:12px 16px;background:#172033;color:#fff;font-weight:800;margin:8px 6px 0 0}.secondary{background:#e8edf5;color:#172033}
-.result{white-space:pre-wrap;background:#f4f7fb;padding:16px;border-radius:14px;line-height:1.7;min-height:100px}
-table{width:100%;border-collapse:collapse;margin-top:12px}th,td{padding:9px;border-bottom:1px solid #e2e7ef;text-align:left;font-size:14px}.tag{display:inline-block;padding:4px 8px;margin:3px;background:#edf2f7;border-radius:999px;font-size:12px}
-@media(max-width:700px){.wrap{padding:12px}}
+.wrap{max-width:1100px;margin:auto;padding:14px}.card{background:#fff;border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:0 8px 28px #0000000d}
+h1{font-size:26px;margin:0 0 5px}.muted{color:#68778c;line-height:1.5;font-size:14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+select,input[type=file]{width:100%;padding:12px;border:1px solid #cfd8e5;border-radius:12px;background:#fff;font:inherit}
+button{border:0;border-radius:12px;padding:12px 15px;background:#172033;color:white;font-weight:800;margin:7px 5px 0 0}
+button.secondary{background:#e9eef5;color:#172033}button.danger{background:#b42318}
+.progress{height:12px;background:#e4e9f0;border-radius:99px;overflow:hidden;margin-top:10px}.bar{height:100%;width:0;background:#172033;transition:.2s}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.item{border:1px solid #d9e0ea;border-radius:15px;padding:10px;background:#fafbfd}
+.thumb{width:100%;height:190px;object-fit:contain;background:#111;border-radius:10px}.small{font-size:12px;color:#68778c;margin-top:6px}
+textarea{width:100%;min-height:150px;border:1px solid #ccd6e5;border-radius:12px;padding:12px;font:15px/1.5 inherit}
+.result{background:#f4f7fb;border-radius:12px;padding:12px;white-space:pre-wrap;line-height:1.55}
+table{width:100%;border-collapse:collapse;margin-top:10px}th,td{padding:8px;border-bottom:1px solid #e1e7ef;text-align:left;font-size:13px}
+.score{font-size:25px;font-weight:900}.review{background:#fff5d6;border-radius:10px;padding:10px;margin-top:8px;font-size:13px}
+.badge{display:inline-block;background:#e9eef5;padding:4px 8px;border-radius:999px;margin:2px;font-size:12px}
+@media(max-width:750px){.row,.row3{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.thumb{height:150px}}
+@media(max-width:480px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <div class="card">
-<h1>📝 Koreksi OCR — Semua Jawaban ASTS</h1>
-<div class="muted">Versi ini tidak lagi khusus Seni Rupa. Kamus dan konteks koreksi dibagi untuk Kelas X Seni Rupa, XI Seni Tari, dan XII Seni Musik berdasarkan soal/rubrik yang sudah diberikan.</div>
+<h1>📝 Penilai Esai — Upload hingga 20 Lembar</h1>
+<div class="muted">Versi uji coba baru: foto lembar jawaban → OCR lokal di browser → koreksi berdasarkan konteks soal → estimasi nilai. Tidak membutuhkan API key. Untuk tulisan tangan, hasil OCR tetap wajib diperiksa sebelum nilai final digunakan.</div>
 </div>
 
 <div class="card">
-<h2>1. Pilih kelas dan nomor soal</h2>
-<select id="kelas">
-<option value="X">X — Seni Rupa</option>
-<option value="XI">XI — Seni Tari</option>
-<option value="XII">XII — Seni Musik</option>
-</select>
-<select id="soal" style="margin-top:10px">
-<option value="1">Soal 1</option><option value="2">Soal 2</option><option value="3">Soal 3</option><option value="4">Soal 4</option><option value="5">Soal 5</option>
-</select>
-<div id="info" class="muted" style="margin-top:12px"></div>
+<h2>1. Pengaturan</h2>
+<div class="row">
+<div><label><b>Kelas</b></label><select id="kelas"><option>X — Seni Rupa</option><option>XI — Seni Tari</option><option>XII — Seni Musik</option></select></div>
+<div><label><b>Jumlah maksimal</b></label><input value="20 lembar" disabled></div>
+</div>
+<div style="margin-top:12px"><input id="files" type="file" accept="image/*" multiple></div>
+<div id="count" class="muted" style="margin-top:8px">Belum ada foto.</div>
+<button id="ocr">🚀 Proses Semua Foto</button>
+<button id="clear" class="secondary">Hapus Semua</button>
+<div class="progress"><div id="bar" class="bar"></div></div>
+<div id="status" class="muted" style="margin-top:8px">Mesin OCR belum dijalankan.</div>
 </div>
 
 <div class="card">
-<h2>2. Hasil OCR</h2>
-<textarea id="src" placeholder="Tempel hasil OCR di sini..."></textarea>
-<br>
-<button id="run">🔎 Koreksi Jawaban</button>
-<button id="sample" class="secondary">Isi Contoh OCR</button>
-<button id="clear" class="secondary">Bersihkan</button>
+<h2>2. Foto yang dipilih</h2>
+<div id="gallery" class="grid"></div>
 </div>
 
 <div class="card">
-<h2>3. Hasil koreksi</h2>
-<div id="out" class="result">Belum diproses.</div>
-<div id="changes"></div>
-</div>
-
-<div class="card">
-<h2>4. Kata/konsep yang dikenali untuk soal ini</h2>
-<div id="dict"></div>
+<h2>3. Hasil pemeriksaan</h2>
+<div id="results" class="muted">Belum ada hasil.</div>
 </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
 const DATA={
-X:{
-1:{title:"Pengertian seni",words:["seni","seni rupa","ekspresi","kreativitas","perasaan","pikiran","ide","gagasan","karya","audio","visual","sastra"],sample:"Seni adalah hasil ekspresi dan kreativitas manusia untuk menyampaikan perasaan, pikiran, ide atau gagasan melalui karya."},
-2:{title:"Prinsip seni rupa dua dimensi",words:["kesatuan","keseimbangan","proporsi","irama","harmoni","keselarasan","penekanan","komposisi"],sample:"Kesatuan, keseimbangan, proposi, irama, harmoni, penekanan dan komposisi."},
-3:{title:"Tujuh unsur seni rupa",words:["titik","garis","bidang","bentuk","gelap terang","tekstur","warna"],sample:"titik, garis, bidorg, bentore, gelap terang, feestur, worna"},
-4:{title:"Empat jenis warna",words:["primer","merah","kuning","biru","sekunder","hijau","jingga","oranye","ungu","tersier","netral","hitam","putih","abu-abu"],sample:"Primer merah kuning biru. Skunder hijau jingga ungu. trausier. netral hitam putih abu abu."},
-5:{title:"Seni rupa murni dan terapan",words:["seni rupa murni","seni rupa terapan","murni","terapan","ekspresi","keindahan","fungsi","pakai","lukisan","patung","batik","kursi","keramik","kriya"],sample:"Seni rupa murni mengutamakan ekspresi dan keindahan, sedangkan seni rupa terapan memiliki fungsi pakai."}
-},
-XI:{
-1:{title:"Pengertian seni dan ekspresi diri",words:["seni","ekspresi","kreatif","perasaan","pikiran","ide","pengalaman","media","ekspresi diri","lukisan","musik","tari"],sample:"Seni adalah ekspresi kreatif manusia berupa perasaan, pikiran, ide atau pengalaman melalui karya."},
-2:{title:"Tenaga, ruang, waktu",words:["tenaga","kekuatan","energi","ruang","tempat","arah","level","jangkauan","waktu","tempo","ritme","durasi","gerak","dinamika"],sample:"Tenaga adalah kekuatan gerak, ruang meliputi arah dan level, waktu meliputi tempo, ritme dan durasi."},
-3:{title:"Wiraga, wirama, wirasa",words:["wiraga","wirama","wirasa","gerak","ketepatan","irama","tempo","penghayatan","perasaan","ekspresi"],sample:"Wiraga adalah ketepatan gerak, wirama kesesuaian gerak dengan irama, wirasa penghayatan dan ekspresi."},
-4:{title:"Gerak imitatif dan imajinatif",words:["imitatif","imajinatif","meniru","objek","gerakan nyata","hewan","khayal","kreativitas"],sample:"Gerak imitatif meniru objek nyata seperti hewan, sedangkan gerak imajinatif berasal dari daya khayal dan kreativitas."},
-5:{title:"Komposisi tari",words:["ide","tema","eksplorasi","improvisasi","komposisi","penyusunan","pola lantai","unsur pendukung","evaluasi","presentasi"],sample:"Menentukan ide dan tema, eksplorasi, improvisasi, komposisi, pola lantai, evaluasi dan presentasi."}
-},
-XII:{
-1:{title:"Klasik, tradisional, modern, kontemporer",words:["klasik","tradisional","modern","kontemporer","tradisi","turun temurun","zaman","kekinian","eksploratif","bunyi","teknik","ide","bentuk"],sample:"Musik klasik mengikuti struktur klasik; tradisional diwariskan turun-temurun; modern mengikuti perkembangan zaman; kontemporer bersifat kekinian dan eksploratif."},
-2:{title:"Unsur musik",words:["melodi","ritme","tempo","dinamika","harmoni","timbre","warna bunyi","bentuk","struktur","tekstur","ketukan","nada","akor","pengulangan"],sample:"Melodi tinggi rendah nada, ritme pola ketukan, tempo lambat cepat, dinamika lembut kuat, harmoni nada bersama, timbre warna bunyi, bentuk struktur, tekstur lapisan bunyi."},
-3:{title:"Instrumen melodis, harmonis, ritmis",words:["melodis","harmonis","ritmis","melodi","akor","harmoni","iringan","ketukan","pianika","seruling","gitar","keyboard","drum","tamborin","gong"],sample:"Instrumen melodis memainkan melodi, harmonis memainkan akor, ritmis mengatur ketukan. Contohnya pianika, gitar, keyboard dan drum."},
-4:{title:"Cara memainkan alat musik",words:["dipukul","dipetik","digesek","ditiup","ditekan","digoyang","digetar","drum","gong","kendang","gitar","kecapi","harpa","biola","viola","cello","seruling","trumpet","saxophone","piano","keyboard","angklung","marakas"],sample:"Dipukul drum, gong. Dipetik gitar, kecapi. Digesek biola. Ditiup seruling. Ditekan piano. Digoyang angklung."},
-5:{title:"Sumber bunyi",words:["idiophone","membranophone","chordophone","aerophone","electrophone","badan alat","selaput","dawai","senar","udara","elektronik"],sample:"Idiophone berasal dari badan alat, membranophone dari selaput, chordophone dari dawai, aerophone dari udara, electrophone dari sistem elektronik."}
-}
-};
-
+X:[
+["Pengertian seni",["seni","ekspresi","ungkapan","audio","visual","sastra","karya"]],
+["Prinsip seni rupa 2 dimensi",["kesatuan","keseimbangan","proporsi","irama","harmoni","keselarasan","penekanan","komposisi"]],
+["7 unsur seni rupa",["titik","garis","bidang","bentuk","gelap terang","tekstur","warna"]],
+["4 jenis warna",["primer","merah","kuning","biru","sekunder","hijau","jingga","oranye","ungu","tersier","netral","hitam","putih","abu-abu"]],
+["Seni rupa murni dan terapan",["seni rupa murni","seni rupa terapan","murni","terapan","fungsi","ekspresi","keindahan","pakai","lukisan","patung","kriya","desain"]]
+],
+XI:[
+["Pengertian seni dan ekspresi diri",["seni","ekspresi","perasaan","pikiran","ide","pengalaman","media","karya"]],
+["Tenaga, ruang dan waktu",["tenaga","ruang","waktu","kekuatan","energi","arah","level","jangkauan","tempo","ritme","durasi"]],
+["Wiraga, wirasa dan wirama",["wiraga","wirasa","wirama","gerak","ketepatan","irama","tempo","penghayatan","perasaan","ekspresi"]],
+["Tari imitatif dan imajinatif",["imitatif","imajinatif","meniru","hewan","objek","khayal","imajinasi","kreativitas"]],
+["Kerangka komposisi tari",["ide","tema","eksplorasi","improvisasi","komposisi","pola lantai","penyusunan","gerak","evaluasi","presentasi"]]
+],
+XII:[
+["Musik klasik, tradisional, modern, kontemporer",["klasik","tradisional","modern","kontemporer","tradisi","turun temurun","zaman","kekinian","eksploratif"]],
+["Seluruh unsur musik",["melodi","ritme","tempo","dinamika","harmoni","timbre","warna bunyi","bentuk","struktur","tekstur","ketukan","nada","akor"]],
+["Fungsi instrumen melodis, harmonis, ritmis",["melodis","harmonis","ritmis","melodi","akor","harmoni","iringan","ketukan"]],
+["Instrumen berdasarkan cara memainkan",["dipukul","dipetik","digesek","ditiup","ditekan","digoyang","drum","gong","kendang","gitar","kecapi","biola","seruling","piano","keyboard","angklung","marakas"]],
+["Instrumen berdasarkan sumber bunyi",["idiophone","membranophone","chordophone","aerophone","electrophone","badan alat","selaput","dawai","senar","udara","elektronik"]]
+]};
 const ALIASES={
 "bidorg":"bidang","bidog":"bidang","bentore":"bentuk","feestur":"tekstur","featur":"tekstur","worna":"warna","wama":"warna",
-"iroma":"irama","propos":"proporsi","proposi":"proporsi","skunde":"sekunder","skunde":"sekunder","trausier":"tersier",
-"gerah terang":"gelap terang","gejah terang":"gelap terang","gelap terong":"gelap terang",
-"wirago":"wiraga","wirama":"wirama","wiroso":"wirasa","wiroso":"wirasa",
-"imaginatif":"imajinatif","imajinatif":"imajinatif","imitatip":"imitatif",
-"melodis":"melodis","melodis":"melodis","harmonis":"harmonis","ritmis":"ritmis",
-"membranophone":"membranophone","membranofon":"membranophone","chordophone":"chordophone","kordofon":"chordophone",
-"idiophone":"idiophone","ideophone":"idiophone","aerophone":"aerophone","electrophone":"electrophone"
+"iroma":"irama","propos":"proporsi","proposi":"proporsi","skunde":"sekunder","trausier":"tersier","gerah terang":"gelap terang","gejah terang":"gelap terang",
+"wirago":"wiraga","wiroso":"wirasa","wirasa":"wirasa","imaginatif":"imajinatif","imitatip":"imitatif",
+"membranofon":"membranophone","kordofon":"chordophone","idiophon":"idiophone","aerophon":"aerophone"
 };
-
-const $=id=>document.getElementById(id);
+let files=[];
+const $=x=>document.getElementById(x);
 function norm(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9\s-]/g," ").replace(/\s+/g," ").trim()}
-function lev(a,b){
- a=norm(a);b=norm(b);const p=Array(b.length+1);for(let j=0;j<=b.length;j++)p[j]=j;
- for(let i=1;i<=a.length;i++){let c=[i];for(let j=1;j<=b.length;j++)c[j]=Math.min(c[j-1]+1,p[j]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));for(let j=0;j<=b.length;j++)p[j]=c[j]}return p[b.length]
-}
+function lev(a,b){a=norm(a);b=norm(b);let p=[...Array(b.length+1)].map((_,i)=>i);for(let i=1;i<=a.length;i++){let c=[i];for(let j=1;j<=b.length;j++)c[j]=Math.min(c[j-1]+1,p[j]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}return p[b.length]}
 function sim(a,b){let m=Math.max(norm(a).length,norm(b).length);return m?1-lev(a,b)/m:0}
-function get(){return DATA[$("kelas").value][$("soal").value]}
-function update(){
- const d=get();$("info").textContent=d.title+". Koreksi hanya diarahkan ke istilah yang relevan dengan soal ini; sistem tidak boleh mengganti kalimat berdasarkan tebakan umum.";
- $("dict").innerHTML=d.words.map(x=>`<span class="tag">${x}</span>`).join(" ");
-}
-function correct(text){
- const d=get(), words=d.words, changes=[];
- let s=text;
+function ctx(){return DATA[$("kelas").value.split(" ")[0]]}
+function correct(text,words){
+ let changes=[];
  for(const [a,b] of Object.entries(ALIASES).sort((x,y)=>y[0].length-x[0].length)){
-   const re=new RegExp("(^|[^A-Za-z])"+a.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"(?=$|[^A-Za-z])","gi");
-   s=s.replace(re,(m,p)=>{changes.push({from:a,to:b,score:1,why:"kamus koreksi"});return p+b});
+  const re=new RegExp("(^|[^A-Za-z])"+a.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"(?=$|[^A-Za-z])","gi");
+  text=text.replace(re,(m,p)=>{changes.push(a+" → "+b);return p+b});
  }
- const tokens=s.split(/(\s+)/);
- for(let i=0;i<tokens.length;i++){
-   const t=tokens[i], raw=t.replace(/[^A-Za-z-]/g,"");
-   if(raw.length<4)continue;
-   let best=null;
-   for(const w of words){const sc=sim(raw,w);if(!best||sc>best.score)best={word:w,score:sc}}
-   if(best && best.score>= (raw.length<=5?.80:.73) && norm(raw)!==norm(best.word)){
-     tokens[i]=t.replace(raw,best.word);
-     changes.push({from:raw,to:best.word,score:best.score,why:"kemiripan dengan istilah soal"});
-   }
+ const toks=text.split(/(\s+)/);
+ for(let i=0;i<toks.length;i++){
+  let raw=toks[i].replace(/[^A-Za-z-]/g,"");if(raw.length<4)continue;
+  let best=null;for(const w of words){let s=sim(raw,w);if(!best||s>best.s)best={w,s}}
+  if(best && best.s>=0.76 && norm(raw)!==norm(best.w)){
+   toks[i]=toks[i].replace(raw,best.w);changes.push(raw+" → "+best.w);
+  }
  }
- return {text:tokens.join(""),changes};
+ return {text:toks.join(""),changes:[...new Set(changes)]};
 }
-$("kelas").onchange=()=>{update();$("src").value=""};$("soal").onchange=()=>{update();$("src").value=""};update();
-$("sample").onclick=()=>{$("src").value=get().sample};
-$("clear").onclick=()=>{$("src").value="";$("out").textContent="Belum diproses.";$("changes").innerHTML=""};
-$("run").onclick=()=>{
- const r=correct($("src").value);$("out").textContent=r.text;
- if(!r.changes.length){$("changes").innerHTML="<p><b>Tidak ada koreksi otomatis.</b></p>";return}
- $("changes").innerHTML="<table><tr><th>Hasil OCR</th><th>Koreksi</th><th>Kemiripan</th><th>Dasar</th></tr>"+
- r.changes.map(x=>`<tr><td>${x.from}</td><td><b>${x.to}</b></td><td>${Math.round(x.score*100)}%</td><td>${x.why}</td></tr>`).join("")+"</table>";
+function score(text,words){
+ const n=norm(text);let hit=0;for(const w of words)if(n.includes(norm(w)))hit++;
+ return Math.min(100,Math.round(hit/Math.max(1,Math.min(words.length,7))*100));
+}
+$("files").onchange=e=>{
+ files=[...e.target.files].slice(0,20);$("count").textContent=files.length?`${files.length} foto dipilih.`:"Belum ada foto.";
+ $("gallery").innerHTML=files.map((f,i)=>`<div class="item"><img class="thumb" id="im${i}"><b>${i+1}. ${f.name}</b><div class="small">Menunggu OCR</div></div>`).join("");
+ files.forEach((f,i)=>{let r=new FileReader();r.onload=()=>{$("im"+i).src=r.result};r.readAsDataURL(f)});
 };
+$("clear").onclick=()=>{files=[];$("files").value="";$("gallery").innerHTML="";$("results").innerHTML="Belum ada hasil.";$("status").textContent="Mesin OCR belum dijalankan.";$("bar").style.width="0"};
+$("ocr").onclick=async()=>{
+ if(!files.length){alert("Pilih foto terlebih dahulu.");return}
+ $("ocr").disabled=true;$("status").textContent="Memuat mesin OCR lokal. Pertama kali bisa membutuhkan waktu.";
+ let worker;
+ try{
+  worker=await Tesseract.createWorker("ind",1,{logger:m=>{
+   if(m.status)$("status").textContent=m.status+(m.progress?` ${Math.round(m.progress*100)}%`:"");
+  }});
+  let out=[];
+  for(let i=0;i<files.length;i++){
+   $("status").textContent=`Membaca foto ${i+1} dari ${files.length}...`;
+   let {data}=await worker.recognize(files[i]);
+   let text=data.text||"";
+   let cls=ctx();
+   let bestQ=0,bestS=-1;
+   cls.forEach((q,j)=>{let s=score(text,q[1]);if(s>bestS){bestS=s;bestQ=j}});
+   let corrected=correct(text,cls[bestQ][1]);
+   out.push({i,text,corrected,q:bestQ,score:bestS});
+   $("bar").style.width=((i+1)/files.length*100)+"%";
+   let card=$("gallery").children[i];card.querySelector(".small").textContent=`OCR selesai • Soal dominan terdeteksi: ${bestQ+1}`;
+  }
+  $("results").innerHTML=out.map(x=>`
+  <div class="card" style="box-shadow:none;border:1px solid #dce3ec">
+   <b>Foto ${x.i+1}: ${files[x.i].name}</b>
+   <div class="score">${x.score}/100 <span class="badge">indikator awal</span></div>
+   <div class="review">⚠️ Nilai ini adalah indikator berdasarkan kata/konsep yang berhasil dibaca. Belum boleh dianggap nilai final sampai jawaban dan nomor soal diperiksa.</div>
+   <h3>Hasil OCR</h3><div class="result">${escapeHtml(x.text)}</div>
+   <h3>Setelah koreksi OCR</h3><div class="result">${escapeHtml(x.corrected.text)}</div>
+   <p><b>Koreksi:</b> ${x.corrected.changes.length?x.corrected.changes.map(escapeHtml).join(", "):"tidak ada"}</p>
+  </div>`).join("");
+ }catch(e){$("status").textContent="OCR gagal: "+e.message;console.error(e)}
+ finally{if(worker)await worker.terminate();$("ocr").disabled=false}
+};
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 </script>
 </body>
 </html>
