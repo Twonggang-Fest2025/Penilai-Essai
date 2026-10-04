@@ -38,13 +38,18 @@ pre{white-space:pre-wrap;word-break:break-word;background:#111;color:#eee;paddin
 </div>
 
 <div class="card">
+<h3>Catatan perbaikan</h3>
+<p class="small"><b>Versi ini memperbaiki error "Unsupported pipeline: image-text-to-text"</b> yang terjadi pada versi sebelumnya. Prototype sekarang memakai Transformers.js 4.3.0, yang menyediakan pipeline image-text-to-text yang dibutuhkan untuk SmolVLM.</p>
+</div>
+
+<div class="card">
 <h3>Catatan prototype</h3>
 <p class="small">Model dijalankan di browser. Pada pemakaian pertama browser perlu mengunduh model. WebGPU akan dipakai bila tersedia. Karena ini masih prototype, hasil AI harus dibandingkan dengan penilaian guru sebelum dipakai untuk ratusan lembar.</p>
 </div>
 </div>
 
 <script type="module">
-import { pipeline } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1/+esm";
+import { pipeline } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.3.0/+esm";
 
 const QUESTIONS = [
 `1. Indonesia adalah negara yang memiliki kekayaan budaya yang tersebar di setiap provinsinya. Sebuah karya manusia yang merupakan ekspresi atau ungkapan dalam diri melalui bentuk audio, visual, sastra, dan lain sebagainya. Pernyataan tersebut merupakan pengertian dari….`,
@@ -83,8 +88,8 @@ answer.addEventListener("change", ()=>{
 
 async function loadModel(){
   if(model)return model;
-  status.textContent="Memuat model lokal browser… pertama kali bisa cukup lama.";
-  const device = ("gpu" in navigator) ? "webgpu" : "wasm";
+  status.textContent="Memuat mesin AI lokal… Unduhan model pertama kali bisa besar dan membutuhkan waktu.";
+  const device = (navigator.gpu) ? "webgpu" : "wasm";
   model = await pipeline("image-text-to-text","HuggingFaceTB/SmolVLM-256M-Instruct",{
     device,
     dtype: device==="webgpu" ? "q4" : "q8"
@@ -140,7 +145,7 @@ Confidence 0 sampai 1. Jika confidence pembacaan atau penilaian rendah, perlu_ce
         {type:"image", image:image},
         {type:"text", text:prompt}
       ]
-    }],{max_new_tokens:1000,temperature:0.1});
+    }],{max_new_tokens:1000,temperature:0.1,return_full_text:false});
 
     const text=Array.isArray(out)?(out[0]?.generated_text ?? JSON.stringify(out)):String(out);
     let generated=text;
