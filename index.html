@@ -3,59 +3,54 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#111827">
-  <title>Penilai Esai Tulisan Tangan — Tanpa API</title>
+  <title>TES OCR Tulisan Tangan</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
   <div>
-    <h1>Penilai Esai Tulisan Tangan</h1>
+    <h1>TES OCR Tulisan Tangan</h1>
     <p>Mode iPad • GitHub Pages • Tanpa API key</p>
   </div>
-  <span id="engineBadge" class="badge">Mesin belum siap</span>
+  <span id="status" class="badge">Mesin belum dites</span>
 </header>
 
 <main>
   <section class="card">
-    <h2>1. Mesin Pembaca</h2>
-    <p class="muted">Pertama kali dijalankan, model AI browser akan diunduh dan disimpan di cache perangkat. Ukurannya sekitar 1 GB.</p>
-    <button id="loadBtn" class="primary">Aktifkan Mesin AI</button>
-    <div id="loadStatus" class="status">Belum dimuat.</div>
-    <div class="progress"><div id="loadBar"></div></div>
+    <h2>1. Tes Mesin OCR</h2>
+    <p class="muted">
+      Versi ini sengaja dibuat sederhana. Kita hanya menguji apakah mesin
+      OCR tulisan tangan dapat berjalan di iPad sebelum memasukkannya ke aplikasi penilaian.
+    </p>
+
+    <button id="loadBtn">Tes / Aktifkan Mesin OCR</button>
+    <div id="progress" class="progress"><div id="bar"></div></div>
+    <div id="message" class="message"></div>
   </section>
 
   <section class="card">
-    <h2>2. Kunci & Rubrik</h2>
-    <div class="grid">
-      <label>Nama ujian<input id="examName" value="Seni Budaya"></label>
-      <label>Bobot per soal<input id="weight" type="number" value="20" min="1" max="100"></label>
-    </div>
-    <p class="muted">Rubrik contoh sudah tersedia. Nanti kita ganti dengan soal dan kunci jawaban asli Bapak agar penilaian lebih tepat.</p>
+    <h2>2. Masukkan Satu Foto Tulisan</h2>
+    <input id="fileInput" type="file" accept="image/*" disabled>
+    <p class="muted">Gunakan satu foto yang berisi tulisan tangan yang cukup jelas. Belum untuk penilaian.</p>
+    <img id="preview" alt="Pratinjau" hidden>
+    <button id="ocrBtn" disabled>🚀 Baca Tulisan</button>
   </section>
 
   <section class="card">
-    <h2>3. Foto Jawaban</h2>
-    <input id="files" type="file" accept="image/*" multiple>
-    <p class="muted">Maksimal 20 foto per batch. Proses dilakukan satu per satu agar iPad tidak terlalu terbebani.</p>
-    <div id="queue"></div>
-    <button id="processBtn" class="primary" disabled>Mulai Menilai</button>
+    <h2>3. Hasil Pembacaan</h2>
+    <div id="result" class="result">Belum ada hasil.</div>
   </section>
 
-  <section class="card">
-    <div class="row">
-      <h2>4. Hasil</h2>
-      <button id="csvBtn" class="secondary" disabled>Ekspor CSV/Excel</button>
-    </div>
-    <div id="resultsWrap">
-      <div class="empty">Belum ada hasil.</div>
-    </div>
+  <section class="card note">
+    <b>Catatan pengujian</b>
+    <p>
+      Model yang dipakai adalah <code>Xenova/trocr-small-handwritten</code>.
+      Model ini memang disediakan dalam format Transformers.js untuk tugas image-to-text,
+      tetapi fokusnya adalah tulisan tangan pada citra dan bukan jaminan membaca satu lembar
+      ujian penuh sekaligus.
+    </p>
   </section>
 </main>
-
-<footer>
-  <p>Catatan: sistem ini tidak menjanjikan 100% akurat. Jika tulisan sangat sulit dibaca, sistem tetap berusaha memberi interpretasi terbaik berdasarkan teks yang berhasil dibaca dan rubrik.</p>
-</footer>
 
 <script type="module" src="app.js"></script>
 </body>
