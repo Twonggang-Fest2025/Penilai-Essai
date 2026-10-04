@@ -34,7 +34,7 @@ table{width:100%;border-collapse:collapse;margin-top:10px}th,td{padding:8px;bord
 <h2>1. Hubungkan AI</h2>
 <div class="grid2">
 <div><label><b>Gemini API Key</b></label><input id="key" type="password" autocomplete="off" placeholder="Tempel API key di sini"></div>
-<div><label><b>Model</b></label><select id="model"><option value="gemini-3.8-flash">Gemini 3.8 Flash — disarankan</option><option value="gemini-3.5-flash">Gemini 3.5 Flash — alternatif</option><option value="gemini-3.1-flash-lite">Gemini 3.1 Flash-Lite — lebih ringan</option></select></div>
+<div><label><b>Model</b></label><select id="model"><option value="gemini-3.8-flash">Gemini 3.8 Flash — disarankan</option><option value="gemini-3.7-flash">Gemini 3.7 Flash — alternatif stabil</option><option value="gemini-3.6-flash">Gemini 3.6 Flash — alternatif</option><option value="gemini-3.5-flash-lite">Gemini 3.5 Flash-Lite — ringan</option></select></div>
 </div>
 <div class="muted" style="margin-top:8px">Key hanya berada di memori halaman selama halaman ini terbuka.</div>
 </div>
@@ -150,7 +150,6 @@ async function callGemini(file,kelas){
    {inline_data:{mime_type:mime,data:dataUrl.split(",")[1]}}
   ]}],
   generationConfig:{
-   temperature:0,
    responseMimeType:"application/json",
    responseSchema:{
     type:"OBJECT",
@@ -164,19 +163,41 @@ async function callGemini(file,kelas){
    }
   }
  };
- const url=`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent($("model").value)}:generateContent?key=${encodeURIComponent(key)}`;
- const res=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
- if(!res.ok){let t=await res.text();throw new Error(`Gemini ${res.status}: ${t.slice(0,500)}`)}
- const j=await res.json();
- const text=j?.candidates?.[0]?.content?.parts?.[0]?.text;
- if(!text) throw new Error("Respons AI kosong.");
- const d=JSON.parse(text);
- d.nilai=d.nilai||{};
- for(let i=1;i<=5;i++)d.nilai[String(i)]=Math.max(0,Math.min(20,Number(d.nilai[String(i)])||0));
- d.total=[1,2,3,4,5].reduce((a,i)=>a+d.nilai[String(i)],0);
- return d;
+ const selected=$("model").value;
+ const fallbacks=[selected,"gemini-3.7-flash","gemini-3.6-flash","gemini-3.5-flash-lite"].filter((v,i,a)=>a.indexOf(v)===i);
+ let lastError="";
+ for(const model of fallbacks){
+  for(let attempt=1;attempt<=3;attempt++){
+   const url=`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`;
+   try{
+    const res=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+    const t=await res.text();
+    if(res.ok){
+      const j=JSON.parse(t);
+      const text=j?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if(!text) throw new Error("Respons AI kosong.");
+      const d=JSON.parse(text);
+      d.nilai=d.nilai||{};
+      for(let i=1;i<=5;i++)d.nilai[String(i)]=Math.max(0,Math.min(20,Number(d.nilai[String(i)])||0));
+      d.total=[1,2,3,4,5].reduce((a,i)=>a+d.nilai[String(i)],0);
+      d.model_dipakai=model;
+      return d;
+    }
+    lastError=`Gemini ${res.status}: ${t.slice(0,500)}`;
+    if(res.status!==503 && res.status!==429) throw new Error(lastError);
+   }catch(err){
+    lastError=err.message||String(err);
+    if(!/Gemini (503|429)/.test(lastError) && !/Failed to fetch/i.test(lastError)) throw err;
+   }
+   if(attempt<3){
+    const wait=Math.min(12000,1500*Math.pow(2,attempt-1));
+    $("status").textContent=`Model ${model} sedang sibuk. Mencoba lagi (${attempt}/2)...`;
+    await new Promise(r=>setTimeout(r,wait));
+   }
+  }
+ }
+ throw new Error(`Semua model sedang tidak tersedia. Coba lagi beberapa saat lagi. Detail terakhir: ${lastError}`);
 }
-
 function render(){
  if(!outputs.length){$("results").innerHTML="Belum ada hasil.";return}
  $("results").innerHTML=outputs.map((o,i)=>`
@@ -184,7 +205,7 @@ function render(){
   <div class="resultHead"><b>Lembar ${i+1} — ${esc(o.file.name)}</b><span class="total">${o.data.total}/100</span></div>
   <img class="thumb" src="${o.url}">
   <p><b>Nama:</b> ${esc(o.data.nama||"(tidak terbaca)")}</p>
-  <p><b>Kelas:</b> ${esc(o.data.kelas_terbaca||$("kelas").value)} &nbsp; <b>No:</b> ${esc(o.data.nomor_ujian||"-")}</p>
+  <p><b>Kelas:</b> ${esc(o.data.kelas_terbaca||$("kelas").value)} &nbsp; <b>No:</b> ${esc(o.data.nomor_ujian||"-")} &nbsp; <b>AI:</b> ${esc(o.data.model_dipakai||$("model").value)}</p>
   <div class="${o.data.status==="PERLU CEK"?"check":"ok"}">${o.data.status==="PERLU CEK"?"⚠️ PERLU CEK — ":"✅ "} ${esc(o.data.catatan||"Hasil dapat diperiksa.")}</div>
   <table><tr><th>Soal</th><th>Jawaban yang terbaca</th><th>Nilai</th><th>Keyakinan</th></tr>
   ${[1,2,3,4,5].map(q=>`<tr><td>${q}</td><td>${esc(o.data.jawaban?.[String(q)]||"")}</td><td><b>${o.data.nilai?.[String(q)]||0}</b>/20</td><td>${o.data.keyakinan?.[String(q)]??"-"}%</td></tr>`).join("")}</table>
