@@ -1,180 +1,58 @@
 <!doctype html>
 <html lang="id">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Penilai ASTS — Prototype Lokal</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Penilai ASTS — Local WebGPU</title>
 <style>
-:root{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#17171a;background:#f5f6f8}
-*{box-sizing:border-box}body{margin:0}.wrap{max-width:920px;margin:auto;padding:18px}
-header{background:linear-gradient(135deg,#17121f,#4b2670);color:white;border-radius:22px;padding:24px;margin-bottom:16px}
-h1{margin:0 0 6px;font-size:26px}p{line-height:1.5}.card{background:white;border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 5px 20px #0000000d}
-label{display:block;font-weight:700;margin:12px 0 7px}input[type=file]{width:100%;padding:12px;border:1px solid #ddd;border-radius:12px;background:#fafafa}
-button{border:0;border-radius:12px;padding:13px 17px;font-weight:800;cursor:pointer;background:#5b2b82;color:white;margin-top:14px;width:100%}
-button:disabled{opacity:.5}.status{padding:12px;border-radius:12px;background:#f0f1f4;margin-top:12px}.preview{max-width:100%;max-height:420px;display:block;margin:12px auto;border-radius:12px}
-table{width:100%;border-collapse:collapse;margin-top:10px}td,th{padding:10px;border-bottom:1px solid #eee;text-align:left;vertical-align:top}.score{font-weight:900;white-space:nowrap}.total{font-size:25px;font-weight:900}
-.small{font-size:13px;color:#666}.warn{background:#fff5d8}.ok{background:#eaf8ef}
-pre{white-space:pre-wrap;word-break:break-word;background:#111;color:#eee;padding:12px;border-radius:12px;max-height:320px;overflow:auto}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:#f5f6fa;color:#171717}.wrap{max-width:1050px;margin:auto;padding:22px}.card{background:white;border-radius:20px;padding:22px;margin-bottom:18px;box-shadow:0 8px 30px #0000000d}h1{margin:0 0 6px;font-size:27px}.muted{color:#666;line-height:1.55}.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}button{border:0;border-radius:12px;padding:13px 17px;font-weight:700;font-size:15px;cursor:pointer;background:#171717;color:#fff}button:disabled{opacity:.45;cursor:not-allowed}input[type=file],textarea,select{width:100%;padding:12px;border:1px solid #ddd;border-radius:12px;background:#fff}textarea{min-height:210px;font-family:inherit;line-height:1.5}.status{padding:13px;border-radius:12px;background:#f0f3f7;white-space:pre-wrap;line-height:1.45}.ok{background:#eaf8ef}.err{background:#fff0f0;color:#9b1c1c}.progress{height:9px;background:#e9ebef;border-radius:20px;overflow:hidden}.bar{height:100%;width:0;background:#171717;transition:width .2s}.preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}.thumb{position:relative}.thumb img{width:100%;height:160px;object-fit:cover;border-radius:12px;border:1px solid #ddd}.badge{position:absolute;left:7px;top:7px;background:#171717;color:white;padding:4px 7px;border-radius:8px;font-size:12px}.result{border:1px solid #e1e1e1;border-radius:14px;padding:15px;margin-top:12px}.score{font-size:25px;font-weight:800}.q{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #eee}.small{font-size:13px}.warn{background:#fff7dd;padding:12px;border-radius:12px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:700px){.grid2{grid-template-columns:1fr}.wrap{padding:14px}}
 </style>
 </head>
-<body>
-<div class="wrap">
-<header>
-<h1>Penilai ASTS — Prototype Lokal</h1>
-<div>Uji 1 lembar • tanpa API key • penilaian berdasarkan soal master Kelas X</div>
-</header>
-
-<div class="card">
-<h2>1. Upload lembar jawaban</h2>
-<input id="answer" type="file" accept="image/*">
-<img id="preview" class="preview" hidden>
-<button id="run">Mulai Penilaian</button>
-<div id="status" class="status">Model belum dimuat.</div>
+<body><div class="wrap">
+<div class="card"><h1>Penilai ASTS — Local WebGPU</h1><div class="muted">Versi perbaikan. Tidak memakai API key. Model berjalan di perangkat melalui WebGPU.</div></div>
+<div class="card"><h2>1. Soal asli</h2><div class="muted">Tempelkan soal yang menjadi dasar penilaian. Sistem akan menilai jawaban berdasarkan soal ini, bukan sekadar mencocokkan OCR.</div><textarea id="questions">KELAS X — SENI RUPA
+1. Indonesia adalah negara yang memiliki kekayaan budaya ... Sebuah karya manusia yang merupakan ekspresi atau ungkapan dalam diri dengan melalui bentuk audio, visual, sastra, dan lain sebagainya. Pernyataan tersebut merupakan pengertian dari….
+2. Jelaskan prinsip-prinsip yang perlu dipertimbangkan dalam penciptaan karya seni rupa dua dimensi.
+3. Jelaskan 7 unsur seni rupa: titik, garis, bidang, bentuk, gelap terang, tekstur, dan warna.
+4. Jelaskan 4 jenis warna beserta contohnya.
+5. Jelaskan perbedaan seni rupa murni dan seni rupa terapan beserta contohnya.</textarea></div>
+<div class="card"><h2>2. Foto lembar jawaban</h2><input id="files" type="file" accept="image/*" multiple><div class="muted small" style="margin-top:8px">Bisa memilih beberapa foto. Untuk iPad, proses satu per satu agar memori tidak penuh.</div><div id="preview" class="preview" style="margin-top:14px"></div><div class="row" style="margin-top:14px"><button id="start" disabled>Mulai Penilaian</button><button id="clear" type="button">Hapus</button></div></div>
+<div class="card"><h2>3. Status model</h2><div id="status" class="status">Belum dimulai.</div><div class="progress" style="margin-top:12px"><div id="bar" class="bar"></div></div></div>
+<div class="card"><h2>4. Hasil</h2><div id="results" class="muted">Belum ada hasil.</div></div>
 </div>
-
-<div class="card">
-<h2>2. Hasil</h2>
-<div id="result"><div class="small">Hasil akan muncul setelah penilaian selesai.</div></div>
-</div>
-
-<div class="card">
-<h3>Catatan perbaikan</h3>
-<p class="small"><b>Versi ini memperbaiki error "Unsupported pipeline: image-text-to-text"</b> yang terjadi pada versi sebelumnya. Prototype sekarang memakai Transformers.js 4.3.0, yang menyediakan pipeline image-text-to-text yang dibutuhkan untuk SmolVLM.</p>
-</div>
-
-<div class="card">
-<h3>Catatan prototype</h3>
-<p class="small">Model dijalankan di browser. Pada pemakaian pertama browser perlu mengunduh model. WebGPU akan dipakai bila tersedia. Karena ini masih prototype, hasil AI harus dibandingkan dengan penilaian guru sebelum dipakai untuk ratusan lembar.</p>
-</div>
-</div>
-
 <script type="module">
-import { pipeline } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.3.0/+esm";
-
-const QUESTIONS = [
-`1. Indonesia adalah negara yang memiliki kekayaan budaya yang tersebar di setiap provinsinya. Sebuah karya manusia yang merupakan ekspresi atau ungkapan dalam diri melalui bentuk audio, visual, sastra, dan lain sebagainya. Pernyataan tersebut merupakan pengertian dari….`,
-`2. Karya seni rupa sebagai hasil daya cipta dan rasa seseorang perupa tentu saja berangkat dari pertimbangan nalar yang matang. Meskipun ia bekerja dengan dorongan naluri atau intuisi, tetap saja ada pertimbangan yang rasional dalam penciptaan karya. Dalam penciptaan karya seni rupa 2 dimensi apa saja prinsip-prinsip yang harus dipertimbangkan....`,
-`3. Jelaskan 7 macam unsur seni rupa yang anda ketahui: titik, garis, bidang, bentuk, gelap terang, tekstur, dan warna.`,
-`4. Jelaskan 4 jenis warna beserta contohnya.`,
-`5. Jelaskan perbedaan antara seni rupa murni dan seni rupa terapan dengan memberikan contoh karya masing-masing.`
-];
-
-const RUBRIC = `
-Pedoman penilaian:
-- Setiap soal bernilai 0 sampai 20.
-- Nilai berdasarkan makna jawaban terhadap pertanyaan, bukan sekadar pencocokan kata.
-- Jawaban singkat tetap boleh mendapat nilai penuh jika memang tepat menjawab pertanyaan.
-- Soal 1 meminta istilah pengertian seni secara umum; jangan menganggap "seni rupa" otomatis benar karena soal mencakup audio, visual, sastra, dan bentuk seni lainnya.
-- Soal 2 menilai prinsip seni rupa 2 dimensi yang relevan, misalnya kesatuan, keseimbangan, proporsi, irama, harmoni/keselarasan, penekanan, komposisi.
-- Soal 3 meminta tujuh unsur: titik, garis, bidang, bentuk, gelap-terang, tekstur, warna. Penjelasan yang benar diberi nilai lebih tinggi.
-- Soal 4 meminta empat jenis warna beserta contoh; jawaban ideal mencakup primer, sekunder, tersier, dan netral beserta contoh yang tepat.
-- Soal 5 meminta perbedaan seni rupa murni dan terapan serta contoh masing-masing. Jawaban yang hanya menyebut salah satu istilah tanpa penjelasan tidak penuh.
-- Jika tulisan atau bagian jawaban tidak terbaca, jangan mengarang; beri confidence rendah dan tandai PERLU CEK.
-`;
-
-let model = null;
-
-const answer = document.querySelector("#answer");
-const preview = document.querySelector("#preview");
-const run = document.querySelector("#run");
-const status = document.querySelector("#status");
-const result = document.querySelector("#result");
-
-answer.addEventListener("change", ()=>{
-  const f=answer.files[0];
-  if(!f)return;
-  preview.src=URL.createObjectURL(f); preview.hidden=false;
-});
-
-async function loadModel(){
-  if(model)return model;
-  status.textContent="Memuat mesin AI lokal… Unduhan model pertama kali bisa besar dan membutuhkan waktu.";
-  const device = (navigator.gpu) ? "webgpu" : "wasm";
-  model = await pipeline("image-text-to-text","HuggingFaceTB/SmolVLM-256M-Instruct",{
-    device,
-    dtype: device==="webgpu" ? "q4" : "q8"
-  });
-  status.textContent="Model siap. Klik Mulai Penilaian.";
-  return model;
+const $=s=>document.querySelector(s); const filesEl=$('#files'), start=$('#start'), clear=$('#clear'), preview=$('#preview'), status=$('#status'), results=$('#results'), bar=$('#bar');
+let files=[]; let worker=null; let ready=false; let currentResolve=null; let currentReject=null;
+function setStatus(t,kind=''){status.textContent=t;status.className='status '+kind}
+function makeWorker(){
+  worker=new Worker('./worker.js',{type:'module'});
+  worker.onmessage=e=>{const d=e.data;
+    if(d.status==='loading') setStatus(d.data||'Memuat model…');
+    else if(d.status==='initiate'||d.status==='progress') {setStatus('Mengunduh model: '+(d.file||'')+(d.progress!=null?' — '+Math.round(d.progress)+'%':'')); if(d.progress!=null)bar.style.width=Math.min(100,d.progress)+'%';}
+    else if(d.status==='done') setStatus('Model: '+(d.file||'')+' selesai');
+    else if(d.status==='ready'){ready=true;setStatus('Model siap. Silakan mulai penilaian.','ok');start.disabled=files.length===0;}
+    else if(d.status==='update') setStatus('AI sedang membaca dan menilai…');
+    else if(d.status==='complete'){currentResolve?.(d.output?.[0]||'');currentResolve=null;currentReject=null;}
+    else if(d.status==='error'){const err=d.data||'Kesalahan tidak diketahui';setStatus('Terjadi kesalahan:\n'+err,'err');currentReject?.(new Error(err));currentResolve=null;currentReject=null;}
+  };
+  worker.onerror=e=>setStatus('Worker error: '+e.message,'err');
+  worker.postMessage({type:'check'});
+  setTimeout(()=>worker.postMessage({type:'load'}),300);
 }
-
-function cleanJSON(s){
-  const a=s.indexOf("{"), b=s.lastIndexOf("}");
-  if(a>=0 && b>a)return s.slice(a,b+1);
-  return null;
-}
-
-run.addEventListener("click", async ()=>{
-  const f=answer.files[0];
-  if(!f){alert("Pilih foto lembar jawaban terlebih dahulu.");return}
-  run.disabled=true; result.innerHTML=""; 
-  try{
-    const pipe=await loadModel();
-    status.textContent="Membaca identitas dan jawaban…";
-    const image=await createImageBitmap(f);
-    const prompt = `Anda adalah pemeriksa ujian Seni Rupa Kelas X.
-Baca lembar jawaban tulisan tangan pada gambar. Jangan mengarang tulisan yang tidak terlihat.
-Kemudian nilai jawaban siswa berdasarkan soal asli dan pedoman berikut.
+async function blobToDataURL(file){return await new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsDataURL(file)})}
+function renderPreview(){preview.innerHTML='';files.forEach((f,i)=>{const d=document.createElement('div');d.className='thumb';d.innerHTML=`<span class="badge">${i+1}</span><img alt="lembar ${i+1}" src="${URL.createObjectURL(f)}">`;preview.appendChild(d)});start.disabled=!ready||!files.length}
+filesEl.onchange=()=>{files=Array.from(filesEl.files||[]).slice(0,20);renderPreview();setStatus(files.length?files.length+' foto siap dinilai.':'Belum ada foto.')};
+clear.onclick=()=>{files=[];filesEl.value='';preview.innerHTML='';results.innerHTML='Belum ada hasil.';bar.style.width='0';setStatus('Belum dimulai.');start.disabled=true};
+async function ask(imageData){const q=$('#questions').value;const prompt=`Anda adalah guru Seni Budaya. Nilai satu lembar jawaban tulisan tangan pada foto berdasarkan SOAL ASLI berikut. Jangan hanya melakukan OCR. Pahami maksud jawaban siswa dan hubungan jawaban dengan pertanyaan. Jawaban satu kata tetap dapat bernilai penuh jika pertanyaan memang meminta istilah/identifikasi; contoh: bila soal bertanya “Pernyataan tersebut merupakan pengertian dari…”, jawaban “Seni” dapat benar jika memang istilah yang diminta. Beri skor setiap soal 0–20 berdasarkan ketepatan isi, kelengkapan sesuai tuntutan soal, dan contoh bila diminta. Jangan menghukum variasi ejaan kecil jika maksudnya jelas. Jika tulisan tidak terbaca, jangan mengarang; tandai perlu_cek. Identifikasi nama, kelas, nomor ujian jika terlihat.
 
 SOAL ASLI:
-${QUESTIONS.map((q,i)=>q).join("\\n\\n")}
+${q}
 
-${RUBRIC}
-
-Keluarkan HANYA JSON valid dengan struktur:
-{
- "nama":"teks yang terbaca atau kosong",
- "kelas":"teks yang terbaca atau kosong",
- "nomor_ujian":"teks yang terbaca atau kosong",
- "answers":[
-  {"no":1,"jawaban":"...","nilai":0,"alasan":"...","confidence":0.0},
-  {"no":2,"jawaban":"...","nilai":0,"alasan":"...","confidence":0.0},
-  {"no":3,"jawaban":"...","nilai":0,"alasan":"...","confidence":0.0},
-  {"no":4,"jawaban":"...","nilai":0,"alasan":"...","confidence":0.0},
-  {"no":5,"jawaban":"...","nilai":0,"alasan":"...","confidence":0.0}
- ],
- "total":0,
- "perlu_cek":false,
- "catatan":"..."
-}
-Confidence 0 sampai 1. Jika confidence pembacaan atau penilaian rendah, perlu_cek harus true. Total adalah jumlah lima nilai.`;
-
-    const out=await pipe([{
-      role:"user",
-      content:[
-        {type:"image", image:image},
-        {type:"text", text:prompt}
-      ]
-    }],{max_new_tokens:1000,temperature:0.1,return_full_text:false});
-
-    const text=Array.isArray(out)?(out[0]?.generated_text ?? JSON.stringify(out)):String(out);
-    let generated=text;
-    if(Array.isArray(out) && out[0]?.generated_text){
-      const g=out[0].generated_text;
-      generated=Array.isArray(g)?(g[g.length-1]?.content ?? JSON.stringify(g)):String(g);
-    }
-    const parsed=JSON.parse(cleanJSON(generated)||"{}");
-    render(parsed,generated);
-    status.textContent="Selesai. Bandingkan hasil dengan lembar asli.";
-  }catch(e){
-    console.error(e);
-    status.textContent="Gagal menjalankan model.";
-    result.innerHTML="<div class='status warn'><b>Terjadi kesalahan.</b><br>"+String(e.message||e)+"</div>";
-  }finally{run.disabled=false}
-});
-
-function render(d,raw){
-  const rows=(d.answers||[]).map(x=>`<tr><td>${x.no}</td><td>${escapeHtml(x.jawaban||"")}</td><td class="score">${x.nilai ?? 0}/20</td><td>${escapeHtml(x.alasan||"")}<br><span class="small">confidence: ${x.confidence ?? "-"}</span></td></tr>`).join("");
-  result.innerHTML=`
-  <p><b>Nama:</b> ${escapeHtml(d.nama||"-")}<br>
-  <b>Kelas:</b> ${escapeHtml(d.kelas||"-")}<br>
-  <b>No. Ujian:</b> ${escapeHtml(d.nomor_ujian||"-")}</p>
-  <table><thead><tr><th>No</th><th>Jawaban terbaca</th><th>Nilai</th><th>Penilaian</th></tr></thead><tbody>${rows}</tbody></table>
-  <p class="total">TOTAL: ${d.total ?? 0}/100</p>
-  <div class="status ${d.perlu_cek?'warn':'ok'}"><b>${d.perlu_cek?'PERLU CEK':'SELESAI'}</b><br>${escapeHtml(d.catatan||"")}</div>
-  <details><summary>Data mentah AI</summary><pre>${escapeHtml(raw)}</pre></details>`;
-}
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-</script>
-</body>
-</html>
+KELUARAN WAJIB JSON SAJA:
+{"nama":"","kelas":"","nomor_ujian":"","jawaban":{"1":"","2":"","3":"","4":"","5":""},"skor":{"1":0,"2":0,"3":0,"4":0,"5":0},"total":0,"confidence":0,"perlu_cek":false,"catatan":""}
+Foto lembar jawaban ada pada pesan ini.`;
+return await new Promise((resolve,reject)=>{currentResolve=resolve;currentReject=reject;worker.postMessage({type:'generate',data:[{role:'user',content:[{type:'image',image:imageData},{type:'text',text:prompt}]}]})});}
+function parseJSON(raw){let s=raw.trim().replace(/^```json\s*/i,'').replace(/```$/,'').trim();const a=s.indexOf('{'),b=s.lastIndexOf('}');if(a>=0&&b>a)s=s.slice(a,b+1);return JSON.parse(s)}
+function renderResult(r,i){const score=r.skor||{};return `<div class="result"><div><b>Lembar ${i+1}</b> — ${r.nama||'Nama tidak terbaca'} — ${r.kelas||'-'} — No. ${r.nomor_ujian||'-'}</div><div class="score">${Number(r.total)||0}/100</div><div class="q"><span>Soal 1</span><b>${score['1']??0}/20</b></div><div class="q"><span>Soal 2</span><b>${score['2']??0}/20</b></div><div class="q"><span>Soal 3</span><b>${score['3']??0}/20</b></div><div class="q"><span>Soal 4</span><b>${score['4']??0}/20</b></div><div class="q"><span>Soal 5</span><b>${score['5']??0}/20</b></div><p class="small"><b>Confidence:</b> ${r.confidence??'-'} &nbsp; <b>Perlu cek:</b> ${r.perlu_cek?'YA':'Tidak'}</p><p class="small">${r.catatan||''}</p></div>`}
+start.onclick=async()=>{if(!ready||!files.length)return;start.disabled=true;results.innerHTML='';const out=[];for(let i=0;i<files.length;i++){try{bar.style.width=Math.round(i/files.length*100)+'%';setStatus(`Memproses lembar ${i+1} dari ${files.length}…`);const data=await blobToDataURL(files[i]);const raw=await ask(data);const r=parseJSON(raw);out.push(r);results.innerHTML=out.map(renderResult).join('');}catch(e){out.push({nama:'GAGAL',total:0,skor:{},catatan:e.message,perlu_cek:true});results.innerHTML=out.map(renderResult).join('');}}bar.style.width='100%';setStatus('Selesai memproses '+files.length+' lembar.','ok');start.disabled=false};
+makeWorker();
+</script></body></html>
