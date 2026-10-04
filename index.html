@@ -1,57 +1,56 @@
 <!doctype html>
 <html lang="id">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>TES OCR Tulisan Tangan</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TES OCR Tulisan Tangan v2</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
-  <div>
-    <h1>TES OCR Tulisan Tangan</h1>
-    <p>Mode iPad • GitHub Pages • Tanpa API key</p>
-  </div>
-  <span id="status" class="badge">Mesin belum dites</span>
+  <div><h1>TES OCR Tulisan Tangan v2</h1><p>Uji OCR per potongan tulisan • iPad • tanpa API key</p></div>
+  <span id="status" class="badge">Mesin belum aktif</span>
 </header>
-
 <main>
-  <section class="card">
-    <h2>1. Tes Mesin OCR</h2>
-    <p class="muted">
-      Versi ini sengaja dibuat sederhana. Kita hanya menguji apakah mesin
-      OCR tulisan tangan dapat berjalan di iPad sebelum memasukkannya ke aplikasi penilaian.
-    </p>
+<section class="card">
+<h2>1. Aktifkan Mesin OCR</h2>
+<p class="muted">Versi ini sengaja membaca <b>satu potongan/baris tulisan</b>, bukan satu lembar penuh. Model TrOCR memang dipakai sebagai pipeline <i>image-to-text</i>.</p>
+<button id="loadBtn">Aktifkan Mesin OCR</button>
+<div class="progress"><div id="bar"></div></div>
+<div id="message" class="message"></div>
+</section>
 
-    <button id="loadBtn">Tes / Aktifkan Mesin OCR</button>
-    <div id="progress" class="progress"><div id="bar"></div></div>
-    <div id="message" class="message"></div>
-  </section>
+<section class="card">
+<h2>2. Pilih Foto Jawaban</h2>
+<input id="fileInput" type="file" accept="image/*" disabled>
+<img id="sourcePreview" alt="Foto sumber" hidden>
+<p class="muted">Setelah foto masuk, atur batas potongan sampai hanya berisi 1–2 baris tulisan yang ingin dibaca.</p>
 
-  <section class="card">
-    <h2>2. Masukkan Satu Foto Tulisan</h2>
-    <input id="fileInput" type="file" accept="image/*" disabled>
-    <p class="muted">Gunakan satu foto yang berisi tulisan tangan yang cukup jelas. Belum untuk penilaian.</p>
-    <img id="preview" alt="Pratinjau" hidden>
-    <button id="ocrBtn" disabled>🚀 Baca Tulisan</button>
-  </section>
+<div class="controls">
+  <label>Kiri <output id="x1v">10%</output><input id="x1" type="range" min="0" max="80" value="10"></label>
+  <label>Kanan <output id="x2v">90%</output><input id="x2" type="range" min="20" max="100" value="90"></label>
+  <label>Atas <output id="y1v">10%</output><input id="y1" type="range" min="0" max="80" value="10"></label>
+  <label>Bawah <output id="y2v">35%</output><input id="y2" type="range" min="20" max="100" value="35"></label>
+</div>
+<div class="presets">
+<button class="secondary" data-preset="top">Area atas</button>
+<button class="secondary" data-preset="middle">Area tengah</button>
+<button class="secondary" data-preset="bottom">Area bawah</button>
+</div>
+<div class="cropWrap"><canvas id="cropCanvas"></canvas></div>
+<button id="ocrBtn" disabled>🚀 Baca Potongan Tulisan</button>
+</section>
 
-  <section class="card">
-    <h2>3. Hasil Pembacaan</h2>
-    <div id="result" class="result">Belum ada hasil.</div>
-  </section>
+<section class="card">
+<h2>3. Hasil Pembacaan</h2>
+<div id="result" class="result">Belum ada hasil.</div>
+</section>
 
-  <section class="card note">
-    <b>Catatan pengujian</b>
-    <p>
-      Model yang dipakai adalah <code>Xenova/trocr-small-handwritten</code>.
-      Model ini memang disediakan dalam format Transformers.js untuk tugas image-to-text,
-      tetapi fokusnya adalah tulisan tangan pada citra dan bukan jaminan membaca satu lembar
-      ujian penuh sekaligus.
-    </p>
-  </section>
+<section class="card note">
+<b>Catatan penting</b>
+<p>Jangan menguji dengan satu lembar penuh dulu. Tujuan v2 adalah memastikan model dapat membaca tulisan tangan setelah gambar dipotong menjadi area yang sesuai.</p>
+</section>
 </main>
-
 <script type="module" src="app.js"></script>
 </body>
 </html>
