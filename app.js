@@ -20,32 +20,53 @@ const setStatus = (s, cls="") => {
 $("loadBtn").onclick = async () => {
   try {
     $("loadBtn").disabled = true;
-    setStatus("Menyiapkan mesin AI browser. Ini pertama kali bisa cukup lama...");
+    setStatus("Menyiapkan mesin AI browser. Pertama kali perlu mengunduh model... ");
 
-    const device = navigator.gpu ? "webgpu" : "wasm";
-    $("engineBadge").textContent = "Menyiapkan • " + device.toUpperCase();
+    const preferredDevice = navigator.gpu ? "webgpu" : "wasm";
+    $("engineBadge").textContent = "Menyiapkan • " + preferredDevice.toUpperCase();
 
-    // Quantized components are used to reduce memory use in the browser.
-    model = await Florence2ForConditionalGeneration.from_pretrained(MODEL, {
-      dtype: {
-        embed_tokens: "fp16",
-        vision_encoder: "q4f16",
-        encoder_model: "q4f16",
-        decoder_model_merged: "q4f16"
-      },
-      device
-    });
+    // Konfigurasi ini mengikuti contoh resmi Transformers.js untuk Florence-2:
+    // embed_tokens fp16, vision/encoder/decoder q4 pada WebGPU.
+    const dtype = {
+      embed_tokens: "fp16",
+      vision_encoder: "q4",
+      encoder_model: "q4",
+      decoder_model_merged: "q4"
+    };
+
+    async function loadWith(device) {
+      setStatus(`Memuat Florence-2 (${device.toUpperCase()})...`);
+      return await Florence2ForConditionalGeneration.from_pretrained(MODEL, {
+        dtype,
+        device
+      });
+    }
+
+    try {
+      model = await loadWith(preferredDevice);
+    } catch (firstError) {
+      console.warn("Percobaan pertama gagal:", firstError);
+      // Safari/iPad tertentu dapat gagal pada WebGPU. Coba CPU/WASM otomatis.
+      if (preferredDevice !== "wasm") {
+        setStatus("WebGPU tidak cocok pada perangkat ini. Mencoba mode kompatibilitas WASM...");
+        model = await loadWith("wasm");
+      } else {
+        throw firstError;
+      }
+    }
 
     processor = await AutoProcessor.from_pretrained(MODEL);
     tokenizer = await AutoTokenizer.from_pretrained(MODEL);
 
-    $("engineBadge").textContent = "AI siap • " + device.toUpperCase();
+    const actualDevice = model?.config?.device || (navigator.gpu ? "webgpu" : "wasm");
+    $("engineBadge").textContent = "AI siap • " + String(actualDevice).toUpperCase();
     $("engineBadge").style.background = "#166534";
-    setStatus("Mesin AI siap digunakan.", "ok");
+    setStatus("Mesin AI siap digunakan. Sekarang foto jawaban bisa diproses.", "ok");
     $("processBtn").disabled = files.length === 0;
   } catch (e) {
     console.error(e);
-    setStatus("Gagal memuat mesin: " + (e?.message || e), "error");
+    const msg = e?.message || String(e);
+    setStatus("Gagal memuat mesin: " + msg, "error");
     $("engineBadge").textContent = "Mesin gagal";
     $("loadBtn").disabled = false;
   }
@@ -108,10 +129,12 @@ async function ocrImage(input) {
 
   const task = "<OCR>";
   const prompts = processor.construct_prompts(task);
-  const inputs = await processor(image, prompts);
+  const visionInputs = await processor(image);
+  const textInputs = tokenizer(prompts);
 
   const generatedIds = await model.generate({
-    ...inputs,
+    ...textInputs,
+    ...visionInputs,
     max_new_tokens: 1200
   });
 
