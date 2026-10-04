@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>TES OCR Tulisan Tangan</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div>
+    <h1>TES OCR Tulisan Tangan</h1>
+    <p>Mode iPad • GitHub Pages • Tanpa API key</p>
+  </div>
+  <span id="status" class="badge">Mesin belum dites</span>
+</header>
+
+<main>
+  <section class="card">
+    <h2>1. Tes Mesin OCR</h2>
+    <p class="muted">
+      Versi ini sengaja dibuat sederhana. Kita hanya menguji apakah mesin
+      OCR tulisan tangan dapat berjalan di iPad sebelum memasukkannya ke aplikasi penilaian.
+    </p>
+
+    <button id="loadBtn">Tes / Aktifkan Mesin OCR</button>
+    <div id="progress" class="progress"><div id="bar"></div></div>
+    <div id="message" class="message"></div>
+  </section>
+
+  <section class="card">
+    <h2>2. Masukkan Satu Foto Tulisan</h2>
+    <input id="fileInput" type="file" accept="image/*" disabled>
+    <p class="muted">Gunakan satu foto yang berisi tulisan tangan yang cukup jelas. Belum untuk penilaian.</p>
+    <img id="preview" alt="Pratinjau" hidden>
+    <button id="ocrBtn" disabled>🚀 Baca Tulisan</button>
+  </section>
+
+  <section class="card">
+    <h2>3. Hasil Pembacaan</h2>
+    <div id="result" class="result">Belum ada hasil.</div>
+  </section>
+
+  <section class="card note">
+    <b>Catatan pengujian</b>
+    <p>
+      Model yang dipakai adalah <code>Xenova/trocr-small-handwritten</code>.
+      Model ini memang disediakan dalam format Transformers.js untuk tugas image-to-text,
+      tetapi fokusnya adalah tulisan tangan pada citra dan bukan jaminan membaca satu lembar
+      ujian penuh sekaligus.
+    </p>
+  </section>
+</main>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
