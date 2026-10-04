@@ -2,156 +2,109 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Penilai Esai — Upload 20</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Penilai Esai — Semi Otomatis</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#eef2f7;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.wrap{max-width:1100px;margin:auto;padding:14px}.card{background:#fff;border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:0 8px 28px #0000000d}
-h1{font-size:26px;margin:0 0 5px}.muted{color:#68778c;line-height:1.5;font-size:14px}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-select,input[type=file]{width:100%;padding:12px;border:1px solid #cfd8e5;border-radius:12px;background:#fff;font:inherit}
-button{border:0;border-radius:12px;padding:12px 15px;background:#172033;color:white;font-weight:800;margin:7px 5px 0 0}
-button.secondary{background:#e9eef5;color:#172033}button.danger{background:#b42318}
-.progress{height:12px;background:#e4e9f0;border-radius:99px;overflow:hidden;margin-top:10px}.bar{height:100%;width:0;background:#172033;transition:.2s}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.item{border:1px solid #d9e0ea;border-radius:15px;padding:10px;background:#fafbfd}
-.thumb{width:100%;height:190px;object-fit:contain;background:#111;border-radius:10px}.small{font-size:12px;color:#68778c;margin-top:6px}
-textarea{width:100%;min-height:150px;border:1px solid #ccd6e5;border-radius:12px;padding:12px;font:15px/1.5 inherit}
-.result{background:#f4f7fb;border-radius:12px;padding:12px;white-space:pre-wrap;line-height:1.55}
-table{width:100%;border-collapse:collapse;margin-top:10px}th,td{padding:8px;border-bottom:1px solid #e1e7ef;text-align:left;font-size:13px}
-.score{font-size:25px;font-weight:900}.review{background:#fff5d6;border-radius:10px;padding:10px;margin-top:8px;font-size:13px}
-.badge{display:inline-block;background:#e9eef5;padding:4px 8px;border-radius:999px;margin:2px;font-size:12px}
-@media(max-width:750px){.row,.row3{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.thumb{height:150px}}
-@media(max-width:480px){.grid{grid-template-columns:1fr}}
+.wrap{max-width:1200px;margin:auto;padding:14px}.card{background:#fff;border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:0 8px 28px #0000000c}
+h1{margin:0 0 5px;font-size:26px}.muted{color:#68778c;line-height:1.5;font-size:14px}
+input,select,textarea,button{font:inherit}input,select{width:100%;padding:11px;border:1px solid #ccd6e2;border-radius:11px;background:#fff}
+button{border:0;border-radius:11px;padding:11px 15px;background:#172033;color:#fff;font-weight:800;margin:7px 5px 0 0}.secondary{background:#e8edf5;color:#172033}.danger{background:#b42318}
+.toolbar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}.students{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.student{border:1px solid #dce3ec;border-radius:17px;padding:14px;background:#fbfcfe}.head{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.photo{width:100%;max-height:600px;object-fit:contain;background:#10141b;border-radius:12px;margin:10px 0;touch-action:pinch-zoom}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ans{border:1px solid #dce3ec;border-radius:12px;padding:10px}.ans b{display:block;margin-bottom:7px}
+textarea{width:100%;min-height:110px;padding:10px;border:1px solid #ccd6e2;border-radius:10px;line-height:1.5}
+.score{width:80px}.total{font-size:22px;font-weight:900}.flag{background:#fff4cf;padding:9px;border-radius:10px;font-size:13px;margin-top:8px}
+table{width:100%;border-collapse:collapse;margin-top:12px}th,td{padding:8px;border-bottom:1px solid #e0e6ee;text-align:left;font-size:13px}
+@media(max-width:850px){.students,.toolbar{grid-template-columns:1fr}.answers{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <div class="card">
-<h1>📝 Penilai Esai — Upload hingga 20 Lembar</h1>
-<div class="muted">Versi uji coba baru: foto lembar jawaban → OCR lokal di browser → koreksi berdasarkan konteks soal → estimasi nilai. Tidak membutuhkan API key. Untuk tulisan tangan, hasil OCR tetap wajib diperiksa sebelum nilai final digunakan.</div>
+<h1>📝 Penilai Esai — Mode Semi Otomatis</h1>
+<div class="muted">
+Mode ini sengaja tidak menggunakan OCR yang sudah terbukti kacau pada tulisan tangan Anda.
+Foto tetap menjadi sumber asli. Guru dapat melihat tulisan tangan secara langsung, mengisi jawaban yang terbaca/meragukan, memberi skor, lalu mengekspor rekap.
+</div>
 </div>
 
 <div class="card">
-<h2>1. Pengaturan</h2>
-<div class="row">
-<div><label><b>Kelas</b></label><select id="kelas"><option>X — Seni Rupa</option><option>XI — Seni Tari</option><option>XII — Seni Musik</option></select></div>
-<div><label><b>Jumlah maksimal</b></label><input value="20 lembar" disabled></div>
+<div class="toolbar">
+<div><b>Kelas</b><select id="kelas"><option>X — Seni Rupa</option><option>XI — Seni Tari</option><option>XII — Seni Musik</option></select></div>
+<div><b>Foto per batch</b><input id="files" type="file" accept="image/*" multiple></div>
+<div><b>Aksi</b><br><button id="export">📊 Ekspor Excel/CSV</button><button id="clear" class="secondary">Hapus</button></div>
 </div>
-<div style="margin-top:12px"><input id="files" type="file" accept="image/*" multiple></div>
-<div id="count" class="muted" style="margin-top:8px">Belum ada foto.</div>
-<button id="ocr">🚀 Proses Semua Foto</button>
-<button id="clear" class="secondary">Hapus Semua</button>
-<div class="progress"><div id="bar" class="bar"></div></div>
-<div id="status" class="muted" style="margin-top:8px">Mesin OCR belum dijalankan.</div>
+<div id="count" class="muted" style="margin-top:10px">Belum ada lembar.</div>
 </div>
 
-<div class="card">
-<h2>2. Foto yang dipilih</h2>
-<div id="gallery" class="grid"></div>
+<div id="students" class="students"></div>
 </div>
 
-<div class="card">
-<h2>3. Hasil pemeriksaan</h2>
-<div id="results" class="muted">Belum ada hasil.</div>
-</div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <script>
-const DATA={
-X:[
-["Pengertian seni",["seni","ekspresi","ungkapan","audio","visual","sastra","karya"]],
-["Prinsip seni rupa 2 dimensi",["kesatuan","keseimbangan","proporsi","irama","harmoni","keselarasan","penekanan","komposisi"]],
-["7 unsur seni rupa",["titik","garis","bidang","bentuk","gelap terang","tekstur","warna"]],
-["4 jenis warna",["primer","merah","kuning","biru","sekunder","hijau","jingga","oranye","ungu","tersier","netral","hitam","putih","abu-abu"]],
-["Seni rupa murni dan terapan",["seni rupa murni","seni rupa terapan","murni","terapan","fungsi","ekspresi","keindahan","pakai","lukisan","patung","kriya","desain"]]
-],
-XI:[
-["Pengertian seni dan ekspresi diri",["seni","ekspresi","perasaan","pikiran","ide","pengalaman","media","karya"]],
-["Tenaga, ruang dan waktu",["tenaga","ruang","waktu","kekuatan","energi","arah","level","jangkauan","tempo","ritme","durasi"]],
-["Wiraga, wirasa dan wirama",["wiraga","wirasa","wirama","gerak","ketepatan","irama","tempo","penghayatan","perasaan","ekspresi"]],
-["Tari imitatif dan imajinatif",["imitatif","imajinatif","meniru","hewan","objek","khayal","imajinasi","kreativitas"]],
-["Kerangka komposisi tari",["ide","tema","eksplorasi","improvisasi","komposisi","pola lantai","penyusunan","gerak","evaluasi","presentasi"]]
-],
-XII:[
-["Musik klasik, tradisional, modern, kontemporer",["klasik","tradisional","modern","kontemporer","tradisi","turun temurun","zaman","kekinian","eksploratif"]],
-["Seluruh unsur musik",["melodi","ritme","tempo","dinamika","harmoni","timbre","warna bunyi","bentuk","struktur","tekstur","ketukan","nada","akor"]],
-["Fungsi instrumen melodis, harmonis, ritmis",["melodis","harmonis","ritmis","melodi","akor","harmoni","iringan","ketukan"]],
-["Instrumen berdasarkan cara memainkan",["dipukul","dipetik","digesek","ditiup","ditekan","digoyang","drum","gong","kendang","gitar","kecapi","biola","seruling","piano","keyboard","angklung","marakas"]],
-["Instrumen berdasarkan sumber bunyi",["idiophone","membranophone","chordophone","aerophone","electrophone","badan alat","selaput","dawai","senar","udara","elektronik"]]
-]};
-const ALIASES={
-"bidorg":"bidang","bidog":"bidang","bentore":"bentuk","feestur":"tekstur","featur":"tekstur","worna":"warna","wama":"warna",
-"iroma":"irama","propos":"proporsi","proposi":"proporsi","skunde":"sekunder","trausier":"tersier","gerah terang":"gelap terang","gejah terang":"gelap terang",
-"wirago":"wiraga","wiroso":"wirasa","wirasa":"wirasa","imaginatif":"imajinatif","imitatip":"imitatif",
-"membranofon":"membranophone","kordofon":"chordophone","idiophon":"idiophone","aerophon":"aerophone"
-};
-let files=[];
-const $=x=>document.getElementById(x);
-function norm(s){return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9\s-]/g," ").replace(/\s+/g," ").trim()}
-function lev(a,b){a=norm(a);b=norm(b);let p=[...Array(b.length+1)].map((_,i)=>i);for(let i=1;i<=a.length;i++){let c=[i];for(let j=1;j<=b.length;j++)c[j]=Math.min(c[j-1]+1,p[j]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}return p[b.length]}
-function sim(a,b){let m=Math.max(norm(a).length,norm(b).length);return m?1-lev(a,b)/m:0}
-function ctx(){return DATA[$("kelas").value.split(" ")[0]]}
-function correct(text,words){
- let changes=[];
- for(const [a,b] of Object.entries(ALIASES).sort((x,y)=>y[0].length-x[0].length)){
-  const re=new RegExp("(^|[^A-Za-z])"+a.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"(?=$|[^A-Za-z])","gi");
-  text=text.replace(re,(m,p)=>{changes.push(a+" → "+b);return p+b});
- }
- const toks=text.split(/(\s+)/);
- for(let i=0;i<toks.length;i++){
-  let raw=toks[i].replace(/[^A-Za-z-]/g,"");if(raw.length<4)continue;
-  let best=null;for(const w of words){let s=sim(raw,w);if(!best||s>best.s)best={w,s}}
-  if(best && best.s>=0.76 && norm(raw)!==norm(best.w)){
-   toks[i]=toks[i].replace(raw,best.w);changes.push(raw+" → "+best.w);
-  }
- }
- return {text:toks.join(""),changes:[...new Set(changes)]};
+let items=[];
+const $=id=>document.getElementById(id);
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+function render(){
+ $("count").textContent=items.length?`${items.length} lembar aktif. Maksimal 20 foto per batch.`:"Belum ada lembar.";
+ $("students").innerHTML=items.map((x,i)=>`
+ <div class="student" data-i="${i}">
+  <div class="head"><b>Lembar ${i+1}</b><button class="danger del">Hapus</button></div>
+  <img class="photo" src="${x.url}">
+  <div class="toolbar">
+   <div><label>Nama siswa</label><input class="name" value="${esc(x.name)}" placeholder="Nama"></div>
+   <div><label>Nomor ujian</label><input class="num" value="${esc(x.num)}" placeholder="Nomor"></div>
+   <div><label>Kelas</label><input value="${esc($("kelas").value)}" disabled></div>
+  </div>
+  <div class="answers" style="margin-top:10px">
+   ${[1,2,3,4,5].map(q=>`
+   <div class="ans">
+    <b>Jawaban ${q}</b>
+    <textarea class="a${q}" placeholder="Ketik/benahi jawaban berdasarkan tulisan pada foto...">${esc(x.a[q-1])}</textarea>
+    <div style="display:flex;gap:7px;align-items:center;margin-top:7px">
+      <label>Nilai</label><input class="score s${q} score" type="number" min="0" max="20" value="${x.s[q-1]}">
+    </div>
+   </div>`).join("")}
+  </div>
+  <div class="flag">⚠️ Jika tulisan tidak jelas, jangan menebak. Tandai lembar ini untuk diperiksa ulang.</div>
+  <div style="margin-top:10px">Total: <span class="total">0/100</span></div>
+ </div>`).join("");
+ bind();
 }
-function score(text,words){
- const n=norm(text);let hit=0;for(const w of words)if(n.includes(norm(w)))hit++;
- return Math.min(100,Math.round(hit/Math.max(1,Math.min(words.length,7))*100));
+function bind(){
+ document.querySelectorAll(".student").forEach(card=>{
+  const i=+card.dataset.i;
+  card.querySelector(".del").onclick=()=>{items.splice(i,1);render()};
+  card.querySelector(".name").oninput=e=>items[i].name=e.target.value;
+  card.querySelector(".num").oninput=e=>items[i].num=e.target.value;
+  for(let q=1;q<=5;q++){
+   card.querySelector(".a"+q).oninput=e=>items[i].a[q-1]=e.target.value;
+   card.querySelector(".s"+q).oninput=e=>{items[i].s[q-1]=Math.max(0,Math.min(20,+e.target.value||0));calc(card)};
+  }
+  calc(card);
+ });
+}
+function calc(card){
+ const i=+card.dataset.i, total=items[i].s.reduce((a,b)=>a+(+b||0),0);
+ card.querySelector(".total").textContent=total+"/100";
 }
 $("files").onchange=e=>{
- files=[...e.target.files].slice(0,20);$("count").textContent=files.length?`${files.length} foto dipilih.`:"Belum ada foto.";
- $("gallery").innerHTML=files.map((f,i)=>`<div class="item"><img class="thumb" id="im${i}"><b>${i+1}. ${f.name}</b><div class="small">Menunggu OCR</div></div>`).join("");
- files.forEach((f,i)=>{let r=new FileReader();r.onload=()=>{$("im"+i).src=r.result};r.readAsDataURL(f)});
+ const selected=[...e.target.files].slice(0,20);
+ items=selected.map(f=>({file:f,url:URL.createObjectURL(f),name:"",num:"",a:["","","","",""],s:[0,0,0,0,0]}));
+ render();
 };
-$("clear").onclick=()=>{files=[];$("files").value="";$("gallery").innerHTML="";$("results").innerHTML="Belum ada hasil.";$("status").textContent="Mesin OCR belum dijalankan.";$("bar").style.width="0"};
-$("ocr").onclick=async()=>{
- if(!files.length){alert("Pilih foto terlebih dahulu.");return}
- $("ocr").disabled=true;$("status").textContent="Memuat mesin OCR lokal. Pertama kali bisa membutuhkan waktu.";
- let worker;
- try{
-  worker=await Tesseract.createWorker("ind",1,{logger:m=>{
-   if(m.status)$("status").textContent=m.status+(m.progress?` ${Math.round(m.progress*100)}%`:"");
-  }});
-  let out=[];
-  for(let i=0;i<files.length;i++){
-   $("status").textContent=`Membaca foto ${i+1} dari ${files.length}...`;
-   let {data}=await worker.recognize(files[i]);
-   let text=data.text||"";
-   let cls=ctx();
-   let bestQ=0,bestS=-1;
-   cls.forEach((q,j)=>{let s=score(text,q[1]);if(s>bestS){bestS=s;bestQ=j}});
-   let corrected=correct(text,cls[bestQ][1]);
-   out.push({i,text,corrected,q:bestQ,score:bestS});
-   $("bar").style.width=((i+1)/files.length*100)+"%";
-   let card=$("gallery").children[i];card.querySelector(".small").textContent=`OCR selesai • Soal dominan terdeteksi: ${bestQ+1}`;
-  }
-  $("results").innerHTML=out.map(x=>`
-  <div class="card" style="box-shadow:none;border:1px solid #dce3ec">
-   <b>Foto ${x.i+1}: ${files[x.i].name}</b>
-   <div class="score">${x.score}/100 <span class="badge">indikator awal</span></div>
-   <div class="review">⚠️ Nilai ini adalah indikator berdasarkan kata/konsep yang berhasil dibaca. Belum boleh dianggap nilai final sampai jawaban dan nomor soal diperiksa.</div>
-   <h3>Hasil OCR</h3><div class="result">${escapeHtml(x.text)}</div>
-   <h3>Setelah koreksi OCR</h3><div class="result">${escapeHtml(x.corrected.text)}</div>
-   <p><b>Koreksi:</b> ${x.corrected.changes.length?x.corrected.changes.map(escapeHtml).join(", "):"tidak ada"}</p>
-  </div>`).join("");
- }catch(e){$("status").textContent="OCR gagal: "+e.message;console.error(e)}
- finally{if(worker)await worker.terminate();$("ocr").disabled=false}
+$("clear").onclick=()=>{items=[];$("files").value="";render()};
+$("kelas").onchange=()=>render();
+$("export").onclick=()=>{
+ if(!items.length){alert("Belum ada lembar.");return}
+ const rows=[["No","Nama","Nomor Ujian","Kelas","Jawaban 1","Nilai 1","Jawaban 2","Nilai 2","Jawaban 3","Nilai 3","Jawaban 4","Nilai 4","Jawaban 5","Nilai 5","Total"]];
+ items.forEach((x,i)=>rows.push([i+1,x.name,x.num,$("kelas").value,x.a[0],x.s[0],x.a[1],x.s[1],x.a[2],x.s[2],x.a[3],x.s[3],x.a[4],x.s[4],x.s.reduce((a,b)=>a+(+b||0),0)]));
+ const csv=rows.map(r=>r.map(v=>`"${String(v??"").replace(/"/g,'""')}"`).join(",")).join("\\r\\n");
+ const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="rekap_penilaian_esai.csv";a.click();
 };
-function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
+render();
 </script>
 </body>
 </html>
