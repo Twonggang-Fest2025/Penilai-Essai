@@ -3,232 +3,162 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Penilai Esai Seni Budaya — AI Vision</title>
+<title>Penilai 500 Lembar — AI Vision</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#eef2f7;color:#172033;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.wrap{max-width:1200px;margin:auto;padding:14px}.card{background:#fff;border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:0 8px 28px #0000000c}
-h1{font-size:25px;margin:0 0 6px}.muted{color:#68778c;line-height:1.5;font-size:14px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-input,select,button{font:inherit}input,select{width:100%;padding:12px;border:1px solid #ccd6e2;border-radius:12px;background:#fff}
-button{border:0;border-radius:12px;padding:12px 15px;background:#172033;color:#fff;font-weight:800;margin:7px 5px 0 0}.secondary{background:#e8edf5;color:#172033}.danger{background:#b42318}
-.notice{background:#fff5d6;padding:12px;border-radius:12px;margin-top:12px;font-size:13px;line-height:1.5}
-.progress{height:12px;background:#e3e8ef;border-radius:99px;overflow:hidden;margin-top:12px}.bar{height:100%;width:0;background:#172033;transition:.25s}
-.results{display:grid;grid-template-columns:1fr;gap:12px}.result{border:1px solid #dbe2eb;border-radius:16px;padding:14px;background:#fbfcfe}
-.resultHead{display:flex;justify-content:space-between;gap:10px;align-items:center}.total{font-size:26px;font-weight:900}
-table{width:100%;border-collapse:collapse;margin-top:10px}th,td{padding:8px;border-bottom:1px solid #e0e6ee;text-align:left;font-size:13px;vertical-align:top}
-.thumb{width:100%;max-height:480px;object-fit:contain;background:#111;border-radius:12px;margin-top:10px}
-.answer{white-space:pre-wrap;background:#f3f6fa;padding:9px;border-radius:9px;margin-top:5px;line-height:1.45}
-.ok{background:#eaf8ef;padding:8px;border-radius:9px;font-size:13px}.check{background:#fff0e6;padding:8px;border-radius:9px;font-size:13px}
-@media(max-width:750px){.grid2,.grid3{grid-template-columns:1fr}}
+:root{--bg:#eef2f7;--card:#fff;--ink:#172033;--muted:#68758b;--line:#dbe2ec;--accent:#1c2940;--ok:#157347;--warn:#a86400;--bad:#b42318}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:var(--ink)}
+header{background:linear-gradient(135deg,#121a2b,#26344f);color:#fff;padding:28px 20px}
+header h1{margin:0 0 6px;font-size:26px}header p{margin:0;color:#d9e0eb}
+main{max-width:1250px;margin:auto;padding:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;margin-bottom:16px;box-shadow:0 6px 22px #18253a10}
+h2{margin:0 0 15px;font-size:20px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field label{display:block;font-weight:700;margin-bottom:7px}.field input,.field select{width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:11px;font-size:16px;background:#fff}.wide{grid-column:1/-1}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}button{border:0;border-radius:11px;padding:13px 17px;font-weight:800;font-size:15px;cursor:pointer;background:var(--accent);color:#fff}button.secondary{background:#e8edf5;color:#172033}button.danger{background:#fbe7e5;color:#9e251d}button:disabled{opacity:.5;cursor:not-allowed}
+.small{font-size:13px;color:var(--muted);line-height:1.5}.status{padding:12px 14px;background:#f4f7fb;border-radius:10px;margin-top:13px;color:#4d5c72}
+.progress{height:12px;background:#e2e8f0;border-radius:20px;overflow:hidden;margin-top:13px}.bar{height:100%;width:0;background:#26344f;transition:.25s}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.stat{background:#f5f7fa;border-radius:12px;padding:14px}.stat b{display:block;font-size:23px}.stat span{font-size:12px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;min-width:920px}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{background:#f5f7fa;font-size:13px}td.num,th.num{text-align:center}.score{font-weight:800}.ok{color:var(--ok)}.review{color:var(--warn)}.error{color:var(--bad)}
+.results-wrap{overflow:auto}.answer{max-width:330px;white-space:normal;font-size:12px;color:#56647a}.thumb{width:75px;height:95px;object-fit:cover;border-radius:7px;border:1px solid var(--line);cursor:pointer}
+.note{background:#fff7e6;border:1px solid #f2d18a;padding:12px;border-radius:10px;color:#76520b;margin-top:12px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}.summary{grid-template-columns:1fr 1fr}header h1{font-size:22px}main{padding:10px}.card{padding:15px}}
 </style>
 </head>
 <body>
-<div class="wrap">
-<div class="card">
-<h1>📝 Penilai Esai Seni Budaya — AI Vision</h1>
-<div class="muted">Versi otomatis: foto lembar jawaban → AI membaca tulisan tangan dari gambar → memisahkan jawaban 1–5 → menilai berdasarkan rubrik → menandai hasil yang meragukan.</div>
-<div class="notice"><b>Penting:</b> jangan masukkan API key ke kode GitHub. Masukkan hanya pada kolom di bawah; key tidak disimpan ke localStorage. Untuk keamanan, gunakan key yang dibatasi hanya untuk Gemini API.</div>
-</div>
-
-<div class="card">
+<header><div style="max-width:1250px;margin:auto"><h1>📋 Penilai 500 Lembar — AI Vision</h1><p>Baca tulisan tangan • koreksi berdasarkan soal asli • nilai per nomor • total • Excel</p></div></header>
+<main>
+<section class="card">
 <h2>1. Hubungkan AI</h2>
-<div class="grid2">
-<div><label><b>Gemini API Key</b></label><input id="key" type="password" autocomplete="off" placeholder="Tempel API key di sini"></div>
-<div><label><b>Model</b></label><select id="model"><option value="gemini-3.8-flash">Gemini 3.8 Flash — disarankan</option><option value="gemini-3.7-flash">Gemini 3.7 Flash — alternatif stabil</option><option value="gemini-3.6-flash">Gemini 3.6 Flash — alternatif</option><option value="gemini-3.5-flash-lite">Gemini 3.5 Flash-Lite — ringan</option></select></div>
+<div class="grid">
+<div class="field"><label>Gemini API Key</label><input id="key" type="password" autocomplete="off" placeholder="Tempel API key di sini"></div>
+<div class="field"><label>Model</label><select id="model"><option value="gemini-3.8-flash">Gemini 3.8 Flash — disarankan</option><option value="gemini-3.7-flash">Gemini 3.7 Flash — cadangan</option><option value="gemini-3.5-flash-lite">Gemini 3.5 Flash-Lite — ringan</option></select></div>
+<div class="field"><label>Kelas / mata pelajaran</label><select id="classSel"><option value="X">X — Seni Rupa</option><option value="XI">XI — Seni Tari</option><option value="XII">XII — Seni Musik</option></select></div>
+<div class="field"><label>Jumlah proses bersamaan</label><select id="workers"><option value="1">1 — paling aman</option><option value="2" selected>2 — disarankan</option><option value="3">3 — lebih cepat</option></select></div>
 </div>
-<div class="muted" style="margin-top:8px">Key hanya berada di memori halaman selama halaman ini terbuka.</div>
-</div>
+<p class="small">API key hanya berada di memori halaman dan tidak disimpan oleh aplikasi. Untuk keamanan, gunakan pembatasan API key di akun Google Anda. Jangan masukkan kunci ke file GitHub.</p>
+</section>
 
-<div class="card">
+<section class="card">
 <h2>2. Upload lembar jawaban</h2>
-<div class="grid2">
-<div><label><b>Kelas</b></label><select id="kelas"><option value="X - Seni Rupa">X — Seni Rupa</option><option value="XI - Seni Tari">XI — Seni Tari</option><option value="XII - Seni Musik">XII — Seni Musik</option></select></div>
-<div><label><b>Foto</b></label><input id="files" type="file" accept="image/*" multiple></div>
-</div>
-<div id="count" class="muted" style="margin-top:8px">Belum ada foto.</div>
+<input type="file" id="files" accept="image/*" multiple style="width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:11px;background:#fff">
+<p id="count" class="small">Belum ada foto. Maksimal 20 foto per batch.</p>
+<div class="actions">
 <button id="run">🚀 BACA & NILAI SEMUA</button>
-<button id="clear" class="secondary">Hapus</button>
+<button class="secondary" id="clear">Hapus</button>
+<button class="secondary" id="export" disabled>📊 Export Excel</button>
+</div>
 <div class="progress"><div id="bar" class="bar"></div></div>
-<div id="status" class="muted" style="margin-top:8px">Siap.</div>
-</div>
+<div id="status" class="status">Siap. Untuk uji pertama, gunakan 1 lembar.</div>
+<div class="note">Untuk 500 lembar: proses dilakukan bertahap per batch (maks. 20 foto), sehingga jika satu batch bermasalah Anda tidak kehilangan hasil batch sebelumnya.</div>
+</section>
 
-<div class="card">
+<section class="card">
 <h2>3. Hasil penilaian</h2>
-<div id="results" class="muted">Belum ada hasil.</div>
+<div class="summary">
+<div class="stat"><b id="nDone">0</b><span>Selesai</span></div>
+<div class="stat"><b id="nReview">0</b><span>Perlu cek</span></div>
+<div class="stat"><b id="nErr">0</b><span>Error</span></div>
+<div class="stat"><b id="nAvg">—</b><span>Rata-rata</span></div>
 </div>
+<div class="results-wrap" style="margin-top:15px">
+<table><thead><tr><th>No</th><th>Foto</th><th>Nama</th><th>Kelas</th><th class="num">1</th><th class="num">2</th><th class="num">3</th><th class="num">4</th><th class="num">5</th><th class="num">Total</th><th>Status</th><th>Catatan</th></tr></thead><tbody id="tbody"></tbody></table>
 </div>
+</section>
+</main>
 
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
-const RUBRICS={
-"X - Seni Rupa":{
-"1":"Pengertian seni: hasil ekspresi/kreativitas manusia untuk menyampaikan perasaan, pikiran, ide, atau gagasan melalui karya.",
-"2":"Prinsip seni rupa dua dimensi: kesatuan, keseimbangan, proporsi, irama, harmoni/keselarasan, penekanan, komposisi.",
-"3":"Tujuh unsur seni rupa: titik, garis, bidang, bentuk, gelap-terang, tekstur, warna.",
-"4":"Empat jenis warna: primer (merah, kuning, biru), sekunder (hijau, jingga/oranye, ungu), tersier (campuran primer dan sekunder), netral (hitam, putih, abu-abu).",
-"5":"Seni rupa murni mengutamakan ekspresi/keindahan; seni rupa terapan memiliki fungsi pakai sekaligus mempertimbangkan keindahan. Contoh: lukisan/patung vs batik/kursi/keramik."
-},
-"XI - Seni Tari":{
-"1":"Seni adalah ekspresi kreatif manusia berupa perasaan, pikiran, ide, atau pengalaman melalui karya; seni menjadi media ekspresi diri.",
-"2":"Tenaga adalah kekuatan/energi gerak; ruang adalah tempat, arah, level, dan jangkauan gerak; waktu adalah tempo, ritme, dan durasi. Ketiganya menentukan karakter, dinamika, dan keindahan tari.",
-"3":"Wiraga = kemampuan/ketepatan gerak; wirama = kesesuaian gerak dengan irama/tempo; wirasa = penghayatan/perasaan dan ekspresi. Ketiganya membentuk tari yang harmonis dan ekspresif.",
-"4":"Gerak imitatif meniru objek/gerakan nyata, misalnya gerak hewan. Gerak imajinatif berasal dari daya khayal/kreativitas dan tidak harus meniru gerak nyata.",
-"5":"Komposisi tari: menentukan ide/tema, eksplorasi, improvisasi/pengembangan, komposisi/penyusunan, pola lantai dan unsur pendukung, evaluasi, lalu presentasi."
-},
-"XII - Seni Musik":{
-"1":"Musik klasik mengikuti tradisi/struktur klasik; tradisional diwariskan turun-temurun dalam masyarakat/daerah; modern mengikuti perkembangan zaman dan gaya masa kini; kontemporer bersifat kekinian, eksploratif dalam bunyi, teknik, ide, atau bentuk.",
-"2":"Unsur musik dalam teks: melodi (tinggi-rendah nada), ritme (pola ketukan drum), tempo (lambat lalu cepat), dinamika (lembut lalu kuat), harmoni (nada serentak/akor), timbre (warna bunyi tiap instrumen), bentuk/struktur (bagian dan pengulangan), tekstur (lapisan/pola bunyi yang berpadu).",
-"3":"Instrumen melodis memainkan melodi; harmonis memainkan nada/akor untuk harmoni/iringan; ritmis memberi atau mengatur ketukan/ritme. Contoh: pianika/seruling, gitar/keyboard, drum/tamborin/gong.",
-"4":"Cara memainkan: dipukul (drum/gong/kendang), dipetik (gitar/kecapi/harpa), digesek (biola/viola/cello), ditiup (seruling/trumpet/saxophone), ditekan (piano/keyboard), digoyang/digetarkan (angklung/marakas).",
-"5":"Sumber bunyi: idiophone (badan alat), membranophone (selaput), chordophone (dawai/senar), aerophone (udara), electrophone (sistem elektronik)."
-}};
+const QUESTIONS={
+X:[
+"Indonesia adalah negara yang memiliki kekayaan budaya yang tersebar di setiap provinsinya. Sebuah karya manusia yang merupakan ekspresi atau ungkapan dalam diri melalui bentuk audio, visual, sastra, dan lain sebagainya. Pernyataan tersebut merupakan pengertian dari….",
+"Karya seni rupa sebagai hasil daya cipta dan rasa seseorang perupa tentu saja berangkat dari pertimbangan nalar yang matang. Meskipun ia bekerja dengan dorongan naluri atau intuisi, tetap saja ada pertimbangan yang rasional dalam penciptaan karya. Dalam penciptaan karya seni rupa 2 dimensi apa saja prinsip-prinsip yang harus dipertimbangkan....",
+"Pada dunia yang kita injak ini banyak sekali benda-benda yang berbentuk geometris seperti meja, kursi, dinding, rumah, dan sebagainya. Tentunya bentuk geometris tersebut berasal dari sebuah bentuk yang didasari dari bentuk titik, garis, bidang, bentuk, gelap terang, tekstur, dan warna. Jelaskan 7 macam unsur seni rupa yang anda ketahui…",
+"Jarak pandang atau perspektif adalah suatu jarak pandang yang kita alami dan dapat ditangkap oleh mata. Perbedaan jarak pandang akan sangat mempengaruhi warna yang akan kita lihat seperti perbukitan yang jauh akan terlihat berwarna biru pudar dan semakin dekat akan berwarna hijau. Jelaskan 4 jenis warna beserta contohnya.",
+"Seni rupa merupakan seni kreatif yang objeknya hampir seluruh benda dan makhluk hidup di sekitar kehidupan manusia dengan menggunakan bentuk sebagai mediumnya. Perwujudan karya seni rupa bersifat imajinatif. Jelaskan perbedaan antara seni rupa murni dan seni rupa terapan dengan memberikan contoh karya masing-masing."
+],
+XI:[
+"Jelaskan pengertian seni secara umum menurut pemahamanmu, bagaimana seni dapat menjadi media ekspresi diri bagi seseorang?",
+"Jelaskan pengertian dari tiga persamaan/elemen dalam tari, yaitu tenaga, ruang gerak, dan waktu, serta mengapa ketiganya sangat penting dalam penciptaan karya seni tari.",
+"Jelaskan tiga unsur tari: wiraga, wirasa, dan wirama, serta fungsinya dalam penciptaan karya seni tari kreasi.",
+"Jelaskan pengertian bentuk tari imajinatif dan imitatif.",
+"Sebutkan kerangka penyusunan komposisi pembuatan tari sederhana."
+],
+XII:[
+"Jelaskan pengertian musik klasik, tradisional, modern, dan musik kontemporer.",
+"Berdasarkan teks tentang penampilan vokal, gitar, keyboard, bass, dan drum, analisislah penggunaan seluruh unsur musik.",
+"Jelaskan tiga fungsi alat musik berdasarkan fungsinya, yaitu alat musik melodis, harmonis, dan ritmis.",
+"Sebutkan pengelompokan instrumen musik berdasarkan cara penggunaannya beserta contohnya.",
+"Sebutkan pengelompokan instrumen musik berdasarkan sumber bunyinya beserta contohnya."
+]};
 
-let files=[], outputs=[];
+const RUBRIC={
+X:[
+"Jawaban yang tepat adalah 'Seni'. Soal meminta istilah yang merupakan pengertian dari pernyataan, bukan uraian definisi. Jika siswa menulis Seni/seni, nilai penuh.",
+"Prinsip yang relevan: kesatuan, keseimbangan, proporsi, irama, harmoni/keselarasan, penekanan, komposisi. Nilai berdasarkan jumlah dan ketepatan konsep; variasi istilah yang bermakna sama diterima.",
+"7 unsur: titik, garis, bidang, bentuk, gelap-terang, tekstur, warna. Nilai berdasarkan ketepatan dan kelengkapan.",
+"4 jenis: primer, sekunder, tersier, netral; contoh yang benar diterima. Jika jenis benar tetapi contoh kurang, kurangi proporsional.",
+"Murni: mengutamakan nilai/ekspresi estetis, contoh lukisan/patung. Terapan: memiliki fungsi pakai sekaligus nilai estetis, contoh desain, kerajinan, kriya. Harus menjelaskan perbedaan dan memberi contoh."
+],
+XI:[
+"Harus menjelaskan seni sebagai ekspresi/ungkapan manusia dan bagaimana seni menjadi media menyampaikan emosi, pikiran, gagasan atau pengalaman.",
+"Tenaga = kuat/lemah dan kualitas tenaga; ruang = arah, level, pola/jangkauan; waktu = tempo, durasi, ritme. Harus menjelaskan pentingnya ketiganya untuk membentuk gerak dan komposisi tari.",
+"Wiraga = kemampuan/ketepatan gerak tubuh; wirasa = penghayatan/ekspresi; wirama = kesesuaian gerak dengan irama/tempo. Jelaskan fungsi ketiganya dalam kualitas tari.",
+"Imitatif = meniru gerak/karakter objek atau makhluk yang ada di alam/kehidupan. Imajinatif = gerak hasil daya khayal/kreasi yang tidak harus ada secara nyata.",
+"Kerangka harus memuat tahapan penyusunan komposisi tari sederhana yang relevan, misalnya eksplorasi, improvisasi, evaluasi, komposisi/penyusunan dan penyajian, atau istilah setara yang sesuai materi."
+],
+XII:[
+"Harus membedakan musik klasik, tradisional, modern, dan kontemporer berdasarkan ciri/perkembangan/konteksnya. Penilaian berdasarkan konsep, bukan kata persis.",
+"Unsur yang tampak dalam teks: tempo, ritme, melodi, harmoni, dinamika, timbre/warna bunyi, bentuk/pengulangan, tekstur. Jawaban harus menghubungkan unsur dengan bagian teks.",
+"Melodis = memainkan melodi; harmonis = memainkan/menopang harmoni atau akor; ritmis = mengatur/menegaskan irama/ketukan. Contoh yang tepat diterima.",
+"Pengelompokan berdasarkan cara memainkan: dipukul, dipetik, digesek, ditiup, ditekan, digoyang/dikocok, atau kategori setara; harus disertai contoh.",
+"Pengelompokan sumber bunyi: idiophone, membranophone, chordophone, aerophone, electrophone; contoh yang tepat diterima."
+]};
+
+const state={files:[],results:[]};
 const $=id=>document.getElementById(id);
-const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
-
-$("files").onchange=e=>{
- files=[...e.target.files].slice(0,20);
- $("count").textContent=files.length?`${files.length} foto dipilih. Maksimal 20.`:"Belum ada foto.";
-};
-
-$("clear").onclick=()=>{files=[];outputs=[];$("files").value="";$("results").innerHTML="Belum ada hasil.";$("bar").style.width="0";$("status").textContent="Siap."};
-
-async function fileToDataURL(file){
- return await new Promise((resolve,reject)=>{
-  const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file);
- });
+$("files").onchange=e=>{state.files=[...e.target.files].slice(0,20);$("count").textContent=state.files.length+" foto dipilih. Maksimal 20 per batch.";};
+$("clear").onclick=()=>{state.files=[];state.results=[];$("files").value="";$("tbody").innerHTML="";$("export").disabled=true;updateStats();$("status").textContent="Dibersihkan.";};
+function updateStats(){let done=state.results.filter(x=>x.status==="OK").length,review=state.results.filter(x=>x.status==="PERLU CEK").length,err=state.results.filter(x=>x.status==="ERROR").length;let vals=state.results.filter(x=>Number.isFinite(x.total)).map(x=>x.total);$("nDone").textContent=done;$("nReview").textContent=review;$("nErr").textContent=err;$("nAvg").textContent=vals.length?(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1):"—";}
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+function render(){let tb=$("tbody");tb.innerHTML="";state.results.forEach((r,i)=>{let tr=document.createElement("tr");tr.innerHTML=`<td>${i+1}</td><td><img class="thumb" src="${r.url||""}" onclick="window.open(this.src,'_blank')"></td><td><b>${esc(r.name)}</b><div class="small">${esc(r.examNo)}</div></td><td>${esc(r.className)}</td>${r.scores.map(v=>`<td class="num score">${v}</td>`).join("")}<td class="num score">${r.total??"—"}</td><td class="${r.status==='OK'?'ok':r.status==='PERLU CEK'?'review':'error'}"><b>${r.status}</b></td><td class="answer">${esc(r.notes)}</td>`;tb.appendChild(tr)});updateStats();$("export").disabled=!state.results.length;}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+async function imageToData(file){return new Promise((resolve,reject)=>{let img=new Image(),reader=new FileReader();reader.onload=()=>{img.onload=()=>{let max=1800,scale=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement("canvas");c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);let x=c.getContext("2d");x.drawImage(img,0,0,c.width,c.height);resolve({mime:"image/jpeg",data:c.toDataURL("image/jpeg",.86).split(",")[1]})};img.onerror=reject;img.src=reader.result};reader.onerror=reject;reader.readAsDataURL(file)})}
+function schema(){return {type:"object",properties:{
+name:{type:"string"},className:{type:"string"},examNo:{type:"string"},
+answers:{type:"array",items:{type:"object",properties:{number:{type:"integer"},text:{type:"string"},score:{type:"integer"},confidence:{type:"integer"},reason:{type:"string"}},required:["number","text","score","confidence","reason"]}},
+total:{type:"integer"},status:{type:"string"},notes:{type:"string"}},required:["name","className","examNo","answers","total","status","notes"]};}
+async function callGemini(model,apiKey,img,klass){
+const prompt=`Anda adalah guru Seni Budaya yang menilai lembar jawaban tulisan tangan.
+KELAS/MAPEL: ${klass==="X"?"X / Seni Rupa":klass==="XI"?"XI / Seni Tari":"XII / Seni Musik"}.
+BACA FOTO SECARA VISUAL. Jangan mengandalkan OCR mentah. Identifikasi nama, kelas dan nomor ujian dari bagian identitas.
+PENTING: pahami bentuk pertanyaan sebelum memberi nilai. Jawaban singkat satu kata dapat benar bila pertanyaan memang meminta istilah, misalnya kelas X nomor 1: jawaban "Seni" adalah benar dan bernilai penuh.
+Nilai setiap nomor 0-20. Gunakan konsep/rubrik, bukan kecocokan kata secara buta. Kesalahan ejaan tulisan tangan tidak dikurangi jika maksud konsep jelas.
+Jangan mengarang jawaban yang tidak terlihat. Jika bagian jawaban tidak terbaca, tandai PERLU CEK dan turunkan confidence.
+TOTAL HARUS merupakan jumlah lima skor. Status OK hanya jika identitas dan kelima jawaban cukup terbaca; selain itu PERLU CEK.
+SOAL ASLI:
+${QUESTIONS[klass].map((q,i)=>`${i+1}. ${q}`).join("\n")}
+KRITERIA PENILAIAN:
+${RUBRIC[klass].map((q,i)=>`${i+1}. ${q}`).join("\n")}
+Kembalikan JSON sesuai schema. Teks answer harus merupakan ringkasan/transkripsi seperlunya dari jawaban siswa, bukan jawaban baru.`;
+const body={contents:[{role:"user",parts:[{text:prompt},{inlineData:{mimeType:img.mime,data:img.data}}]}],generationConfig:{responseMimeType:"application/json",responseSchema:schema(),temperature:0}};
+let res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(apiKey)}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+let txt=await res.text();if(!res.ok)throw new Error(res.status+" "+txt);let j=JSON.parse(txt),raw=j.candidates?.[0]?.content?.parts?.[0]?.text;if(!raw)throw new Error("Respons AI kosong");return JSON.parse(raw);
 }
-
-function promptFor(kelas){
- const r=RUBRICS[kelas];
- return `Anda adalah pemeriksa ujian esai Seni Budaya SMA Indonesia.
-Kelas: ${kelas}.
-Setiap soal bernilai maksimal 20, total maksimal 100.
-
-RUBRIK:
-Soal 1: ${r["1"]}
-Soal 2: ${r["2"]}
-Soal 3: ${r["3"]}
-Soal 4: ${r["4"]}
-Soal 5: ${r["5"]}
-
-TUGAS:
-- Periksa FOTO LEMBAR JAWABAN yang diberikan.
-- Baca identitas siswa jika terlihat.
-- Baca jawaban tulisan tangan nomor 1 sampai 5. Pertahankan maksud siswa; jangan mengarang kata yang tidak terlihat.
-- Jangan menilai berdasarkan kemiripan kata saja. Nilai berdasarkan konsep yang sesuai dengan rubrik.
-- Jika jawaban sebagian benar, berikan nilai sebagian.
-- Kesalahan ejaan akibat tulisan tangan jangan dihukum jika maksud jawabannya jelas.
-- Jika tulisan pada suatu bagian tidak terbaca, tandai PERLU CEK dan jangan menebak.
-- Nilai tiap soal 0 sampai 20.
-- Total WAJIB sama dengan jumlah nilai soal 1-5.
-- Jangan mengganti jawaban siswa dengan jawaban contoh/rubrik.
-- Untuk jawaban yang terbaca sebagian, tulis hanya bagian yang benar-benar dapat dipastikan dan jelaskan ketidakpastiannya di catatan.
-
-Kembalikan JSON saja dengan struktur:
-{
- "nama":"",
- "kelas_terbaca":"",
- "nomor_ujian":"",
- "jawaban":{"1":"","2":"","3":"","4":"","5":""},
- "nilai":{"1":0,"2":0,"3":0,"4":0,"5":0},
- "status":"OK atau PERLU CEK",
- "catatan":"",
- "keyakinan":{"1":0,"2":0,"3":0,"4":0,"5":0}
+async function processOne(file,idx){
+let key=$("key").value.trim(), selected=$("model").value, klass=$("classSel").value;
+if(!key)throw new Error("API key belum diisi.");
+let img=await imageToData(file);let models=[selected,...["gemini-3.8-flash","gemini-3.7-flash","gemini-3.5-flash-lite"].filter(x=>x!==selected)];
+let last;
+for(let m of models){for(let attempt=1;attempt<=3;attempt++){try{return {...await callGemini(m,key,img,klass),url:URL.createObjectURL(file),file:file.name};}catch(e){last=e;if(/503|429|UNAVAILABLE|RESOURCE_EXHAUSTED/i.test(e.message)){await sleep(1200*attempt);continue}break}}}
+throw last||new Error("Gagal memproses");
 }
-Keyakinan 0-100 adalah tingkat keyakinan pembacaan jawaban, bukan nilai siswa.`;
-}
-
-async function callGemini(file,kelas){
- const key=$("key").value.trim();
- if(!key) throw new Error("API key belum diisi.");
- const dataUrl=await fileToDataURL(file);
- const mime=file.type||"image/jpeg";
- const body={
-  contents:[{role:"user",parts:[
-   {text:promptFor(kelas)},
-   {inline_data:{mime_type:mime,data:dataUrl.split(",")[1]}}
-  ]}],
-  generationConfig:{
-   responseMimeType:"application/json",
-   responseSchema:{
-    type:"OBJECT",
-    properties:{
-     nama:{type:"STRING"},kelas_terbaca:{type:"STRING"},nomor_ujian:{type:"STRING"},
-     jawaban:{type:"OBJECT",properties:{1:{type:"STRING"},2:{type:"STRING"},3:{type:"STRING"},4:{type:"STRING"},5:{type:"STRING"}}},
-     nilai:{type:"OBJECT",properties:{1:{type:"INTEGER"},2:{type:"INTEGER"},3:{type:"INTEGER"},4:{type:"INTEGER"},5:{type:"INTEGER"}}},
-     status:{type:"STRING"},catatan:{type:"STRING"},
-     keyakinan:{type:"OBJECT",properties:{1:{type:"INTEGER"},2:{type:"INTEGER"},3:{type:"INTEGER"},4:{type:"INTEGER"},5:{type:"INTEGER"}}}
-    }
-   }
-  }
- };
- const selected=$("model").value;
- const fallbacks=[selected,"gemini-3.7-flash","gemini-3.6-flash","gemini-3.5-flash-lite"].filter((v,i,a)=>a.indexOf(v)===i);
- let lastError="";
- for(const model of fallbacks){
-  for(let attempt=1;attempt<=3;attempt++){
-   const url=`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(key)}`;
-   try{
-    const res=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
-    const t=await res.text();
-    if(res.ok){
-      const j=JSON.parse(t);
-      const text=j?.candidates?.[0]?.content?.parts?.[0]?.text;
-      if(!text) throw new Error("Respons AI kosong.");
-      const d=JSON.parse(text);
-      d.nilai=d.nilai||{};
-      for(let i=1;i<=5;i++)d.nilai[String(i)]=Math.max(0,Math.min(20,Number(d.nilai[String(i)])||0));
-      d.total=[1,2,3,4,5].reduce((a,i)=>a+d.nilai[String(i)],0);
-      d.model_dipakai=model;
-      return d;
-    }
-    lastError=`Gemini ${res.status}: ${t.slice(0,500)}`;
-    if(res.status!==503 && res.status!==429) throw new Error(lastError);
-   }catch(err){
-    lastError=err.message||String(err);
-    if(!/Gemini (503|429)/.test(lastError) && !/Failed to fetch/i.test(lastError)) throw err;
-   }
-   if(attempt<3){
-    const wait=Math.min(12000,1500*Math.pow(2,attempt-1));
-    $("status").textContent=`Model ${model} sedang sibuk. Mencoba lagi (${attempt}/2)...`;
-    await new Promise(r=>setTimeout(r,wait));
-   }
-  }
- }
- throw new Error(`Semua model sedang tidak tersedia. Coba lagi beberapa saat lagi. Detail terakhir: ${lastError}`);
-}
-function render(){
- if(!outputs.length){$("results").innerHTML="Belum ada hasil.";return}
- $("results").innerHTML=outputs.map((o,i)=>`
- <div class="result">
-  <div class="resultHead"><b>Lembar ${i+1} — ${esc(o.file.name)}</b><span class="total">${o.data.total}/100</span></div>
-  <img class="thumb" src="${o.url}">
-  <p><b>Nama:</b> ${esc(o.data.nama||"(tidak terbaca)")}</p>
-  <p><b>Kelas:</b> ${esc(o.data.kelas_terbaca||$("kelas").value)} &nbsp; <b>No:</b> ${esc(o.data.nomor_ujian||"-")} &nbsp; <b>AI:</b> ${esc(o.data.model_dipakai||$("model").value)}</p>
-  <div class="${o.data.status==="PERLU CEK"?"check":"ok"}">${o.data.status==="PERLU CEK"?"⚠️ PERLU CEK — ":"✅ "} ${esc(o.data.catatan||"Hasil dapat diperiksa.")}</div>
-  <table><tr><th>Soal</th><th>Jawaban yang terbaca</th><th>Nilai</th><th>Keyakinan</th></tr>
-  ${[1,2,3,4,5].map(q=>`<tr><td>${q}</td><td>${esc(o.data.jawaban?.[String(q)]||"")}</td><td><b>${o.data.nilai?.[String(q)]||0}</b>/20</td><td>${o.data.keyakinan?.[String(q)]??"-"}%</td></tr>`).join("")}</table>
- </div>`).join("");
-}
-
 $("run").onclick=async()=>{
- if(!files.length){alert("Pilih minimal 1 foto.");return}
- if(!$("key").value.trim()){alert("Masukkan Gemini API key terlebih dahulu.");return}
- outputs=[];render();$("run").disabled=true;
- try{
-  for(let i=0;i<files.length;i++){
-   $("status").textContent=`AI sedang membaca lembar ${i+1} dari ${files.length}...`;
-   const file=files[i], url=await fileToDataURL(file);
-   const data=await callGemini(file,$("kelas").value);
-   outputs.push({file,data,url});
-   $("bar").style.width=((i+1)/files.length*100)+"%";
-   render();
-  }
-  $("status").textContent=`Selesai. ${files.length} lembar telah diperiksa.`;
- }catch(e){$("status").textContent="Terhenti: "+e.message;console.error(e)}
- finally{$("run").disabled=false}
-};
+if(!state.files.length){alert("Pilih foto terlebih dahulu.");return}
+if(!$("key").value.trim()){alert("Masukkan Gemini API Key terlebih dahulu.");return}
+state.results=[];$("run").disabled=true;$("clear").disabled=true;
+let files=[...state.files],workers=Number($("workers").value),next=0,finished=0;
+async function worker(){while(true){let i=next++;if(i>=files.length)return;let f=files[i];$("status").textContent=`Memproses ${i+1}/${files.length}: ${f.name}`;try{let r=await processOne(f,i);r.scores=[0,1,2,3,4].map(n=>Number(r.answers?.find(a=>a.number===n+1)?.score??0));r.total=r.scores.reduce((a,b)=>a+b,0);if(r.total<0||r.total>100)r.status="PERLU CEK";state.results[i]=r}catch(e){state.results[i]={name:"—",className:$("classSel").value,examNo:"—",scores:["—","—","—","—","—"],total:null,status:"ERROR",notes:e.message,url:URL.createObjectURL(f),file:f.name}}finished++;$("bar").style.width=(finished/files.length*100)+"%";render()}}
+await Promise.all(Array.from({length:Math.min(workers,files.length)},worker));
+$("status").textContent=`Selesai ${finished}/${files.length}. Periksa baris PERLU CEK sebelum ekspor.`;
+$("run").disabled=false;$("clear").disabled=false;};
+$("export").onclick=()=>{
+if(!state.results.length)return;let rows=state.results.map((r,i)=>({No:i+1,Nama:r.name,Kelas:r.className,Nomor_Ujian:r.examNo,Soal_1:r.scores[0],Soal_2:r.scores[1],Soal_3:r.scores[2],Soal_4:r.scores[3],Soal_5:r.scores[4],Total:r.total,Status:r.status,Catatan:r.notes,File:r.file}));let ws=XLSX.utils.json_to_sheet(rows),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"Hasil Penilaian");XLSX.writeFile(wb,"Hasil_Penilaian_AST_Seni_Budaya.xlsx");};
 </script>
-</body>
-</html>
+</body></html>
