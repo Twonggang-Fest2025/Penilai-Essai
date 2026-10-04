@@ -29,7 +29,7 @@ $("loadBtn").onclick = async () => {
     // embed_tokens fp16, vision/encoder/decoder q4 pada WebGPU.
     const dtype = {
       embed_tokens: "fp16",
-      vision_encoder: "q4",
+      vision_encoder: "fp16",
       encoder_model: "q4",
       decoder_model_merged: "q4"
     };
@@ -65,7 +65,7 @@ $("loadBtn").onclick = async () => {
     $("processBtn").disabled = files.length === 0;
   } catch (e) {
     console.error(e);
-    const msg = e?.message || String(e);
+    const msg = e?.message || e?.cause?.message || e?.toString?.() || String(e);
     setStatus("Gagal memuat mesin: " + msg, "error");
     $("engineBadge").textContent = "Mesin gagal";
     $("loadBtn").disabled = false;
